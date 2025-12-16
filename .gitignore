@@ -1,0 +1,24 @@
+# Environment
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Uploads (si se añaden)
+/uploads/*
+!/uploads/.gitkeep
+
+# Documentos de referencia
+*.pdf
+*.docx
+info_aquatiq.txt
