@@ -19,7 +19,7 @@ define('DB_NAME', $_ENV['DB_NAME'] ?? 'aquatiq_bd');
 define('DB_USER', $_ENV['DB_USER'] ?? 'aquatiq_usr');
 define('DB_PASS', $_ENV['DB_PASS'] ?? '');
 
-function getDBConnection(): PDO {
+function getDBConnection(): ?PDO {
     static $pdo = null;
     
     if ($pdo === null) {
@@ -31,7 +31,8 @@ function getDBConnection(): PDO {
                 PDO::ATTR_EMULATE_PREPARES => false
             ]);
         } catch (PDOException $e) {
-            die("Error de conexión: " . $e->getMessage());
+            error_log("Aquatiq DB Error: " . $e->getMessage());
+            return null;
         }
     }
     

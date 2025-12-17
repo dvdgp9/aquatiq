@@ -6,6 +6,11 @@
 function login(string $email, string $password): bool {
     $pdo = getDBConnection();
     
+    if ($pdo === null) {
+        error_log("Aquatiq: No se pudo conectar a la BD en login");
+        return false;
+    }
+    
     $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = ? AND activo = 1");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
