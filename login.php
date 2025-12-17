@@ -31,6 +31,7 @@ if (isPost()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - <?= APP_NAME ?></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css">
+    <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
