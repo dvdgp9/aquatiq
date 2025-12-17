@@ -24,12 +24,13 @@ if (isPost()) {
         $apellido1 = trim($_POST['apellido1'] ?? '');
         $apellido2 = trim($_POST['apellido2'] ?? '');
         $grupo_id = !empty($_POST['grupo_id']) ? (int)$_POST['grupo_id'] : null;
+        $padre_id = !empty($_POST['padre_id']) ? (int)$_POST['padre_id'] : null;
         
         if (empty($nombre) || empty($apellido1)) {
             setFlashMessage('error', 'Nombre y primer apellido son obligatorios.');
         } else {
-            $stmt = $pdo->prepare("INSERT INTO alumnos (numero_usuario, nombre, apellido1, apellido2, grupo_id) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$numero_usuario, $nombre, $apellido1, $apellido2, $grupo_id]);
+            $stmt = $pdo->prepare("INSERT INTO alumnos (numero_usuario, nombre, apellido1, apellido2, grupo_id, padre_id) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$numero_usuario, $nombre, $apellido1, $apellido2, $grupo_id, $padre_id]);
             setFlashMessage('success', 'Alumno creado correctamente.');
         }
     }
@@ -41,12 +42,13 @@ if (isPost()) {
         $apellido1 = trim($_POST['apellido1'] ?? '');
         $apellido2 = trim($_POST['apellido2'] ?? '');
         $grupo_id = !empty($_POST['grupo_id']) ? (int)$_POST['grupo_id'] : null;
+        $padre_id = !empty($_POST['padre_id']) ? (int)$_POST['padre_id'] : null;
         
         if (empty($nombre) || empty($apellido1)) {
             setFlashMessage('error', 'Nombre y primer apellido son obligatorios.');
         } else {
-            $stmt = $pdo->prepare("UPDATE alumnos SET numero_usuario = ?, nombre = ?, apellido1 = ?, apellido2 = ?, grupo_id = ? WHERE id = ?");
-            $stmt->execute([$numero_usuario, $nombre, $apellido1, $apellido2, $grupo_id, $id]);
+            $stmt = $pdo->prepare("UPDATE alumnos SET numero_usuario = ?, nombre = ?, apellido1 = ?, apellido2 = ?, grupo_id = ?, padre_id = ? WHERE id = ?");
+            $stmt->execute([$numero_usuario, $nombre, $apellido1, $apellido2, $grupo_id, $padre_id, $id]);
             setFlashMessage('success', 'Alumno actualizado correctamente.');
         }
     }
@@ -130,6 +132,9 @@ $grupos = $pdo->query("SELECT g.id, g.nombre, n.nombre as nivel_nombre
                        LEFT JOIN niveles n ON g.nivel_id = n.id 
                        WHERE g.activo = 1 
                        ORDER BY n.orden, g.nombre")->fetchAll();
+
+// Obtener padres para el select
+$padres = $pdo->query("SELECT id, nombre, email FROM usuarios WHERE rol = 'padre' AND activo = 1 ORDER BY nombre")->fetchAll();
 
 // Filtros
 $filtroGrupo = isset($_GET['grupo']) ? (int)$_GET['grupo'] : null;
@@ -339,6 +344,18 @@ include INCLUDES_PATH . '/header.php';
                 </select>
             </div>
             
+            <div class="form-group">
+                <label for="padre_id">Padre/Tutor</label>
+                <select id="padre_id" name="padre_id" class="form-control">
+                    <option value="">-- Sin padre asignado --</option>
+                    <?php foreach ($padres as $p): ?>
+                    <option value="<?= $p['id'] ?>">
+                        <?= sanitize($p['nombre']) ?> (<?= sanitize($p['email']) ?>)
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            
             <div class="modal-footer">
                 <button type="button" onclick="this.closest('dialog').close()" class="btn btn-secondary">Cancelar</button>
                 <button type="submit" class="btn btn-primary">Crear Alumno</button>
@@ -427,6 +444,18 @@ include INCLUDES_PATH . '/header.php';
                     <?php foreach ($grupos as $g): ?>
                     <option value="<?= $g['id'] ?>" <?= $editAlumno['grupo_id'] == $g['id'] ? 'selected' : '' ?>>
                         <?= sanitize($g['nombre']) ?> <?= $g['nivel_nombre'] ? "({$g['nivel_nombre']})" : '' ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-padre_id">Padre/Tutor</label>
+                <select id="edit-padre_id" name="padre_id" class="form-control">
+                    <option value="">-- Sin padre asignado --</option>
+                    <?php foreach ($padres as $p): ?>
+                    <option value="<?= $p['id'] ?>" <?= $editAlumno['padre_id'] == $p['id'] ? 'selected' : '' ?>>
+                        <?= sanitize($p['nombre']) ?> (<?= sanitize($p['email']) ?>)
                     </option>
                     <?php endforeach; ?>
                 </select>
