@@ -44,8 +44,10 @@ $pageTitle = $pageTitle ?? APP_NAME;
             </nav>
             
             <div class="user-menu">
-                <span class="user-name"><?= sanitize($currentUser['nombre']) ?></span>
-                <span class="user-role">(<?= ROLES[$currentUser['rol']] ?>)</span>
+                <div class="user-info">
+                    <span class="user-name"><?= sanitize($currentUser['nombre']) ?></span>
+                    <span class="user-role"><?= ROLES[$currentUser['rol']] ?></span>
+                </div>
                 <a href="/logout.php" class="btn-logout">Salir</a>
             </div>
             <?php endif; ?>
