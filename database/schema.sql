@@ -151,7 +151,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- Password: admin123 (cambiar en producción)
 -- ---------------------------------------------
 INSERT INTO `usuarios` (`nombre`, `email`, `password`, `rol`) VALUES
-('Administrador', 'admin@aquatiq.es', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'superadmin');
+('Administrador', 'admin@aquatiq.es', '$2y$12$1REus8EmMY.dyLbyuTzqM.btToTcktDI0EtSECBgXAR3UM9TrIIuy', 'superadmin');
 
 -- ---------------------------------------------
 -- Niveles
