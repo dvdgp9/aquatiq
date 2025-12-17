@@ -40,6 +40,7 @@ if (isPost()) {
             </a>
             
             <h1>Iniciar Sesión</h1>
+            <p class="login-subtitle">Sistema de evaluación de natación</p>
             
             <?php if ($error): ?>
             <div class="alert alert-error"><?= sanitize($error) ?></div>
