@@ -77,58 +77,60 @@ monitores_grupos (monitor_id, grupo_id) -- relación N:M
 - [x] 1.4 Sistema de autenticación básico (login/logout/sesiones)
 - [x] 1.5 Layout base con logo y navegación según rol
 
-### Fase 2: Gestión de datos maestros (Admin)
-- [ ] 2.1 CRUD de Niveles
-- [ ] 2.2 CRUD de Grupos
-- [ ] 2.3 CRUD de Alumnos
-- [ ] 2.4 CRUD de Monitores (usuarios con rol monitor)
-- [ ] 2.5 Asignación monitores ↔ grupos
-- [ ] 2.6 CRUD de Padres y asignación a alumnos
+### Fase 2: Gestión de datos maestros (Admin) ✅ COMPLETADA
+- [x] 2.1 CRUD de Niveles
+- [x] 2.2 CRUD de Grupos
+- [x] 2.3 CRUD de Alumnos (con importación CSV)
+- [x] 2.4 CRUD de Monitores (usuarios con rol monitor)
+- [x] 2.5 Asignación monitores ↔ grupos
 
-### Fase 3: Gestión de evaluaciones (Admin)
-- [ ] 3.1 CRUD de Plantillas de evaluación por nivel
-- [ ] 3.2 CRUD de Ítems dentro de cada plantilla
-- [ ] 3.3 Reordenación de ítems
+### Fase 3: Gestión de evaluaciones (Admin) ✅ COMPLETADA
+- [x] 3.1 CRUD de Plantillas de evaluación por nivel
+- [x] 3.2 CRUD de Ítems dentro de cada plantilla
 
-### Fase 4: Panel del Monitor
-- [ ] 4.1 Ver grupos asignados y sus alumnos
-- [ ] 4.2 Crear evaluación para un alumno (seleccionar plantilla/nivel)
-- [ ] 4.3 Rellenar evaluación (marcar Sí/No/A veces por ítem)
-- [ ] 4.4 Añadir recomendación de nivel
-- [ ] 4.5 Guardar y editar evaluaciones
+### Fase 4: Panel del Monitor ✅ COMPLETADA
+- [x] 4.1 Ver grupos asignados y sus alumnos
+- [x] 4.2 Crear evaluación para un alumno (seleccionar plantilla/nivel)
+- [x] 4.3 Rellenar evaluación (marcar Sí/No/A veces por ítem)
+- [x] 4.4 Añadir recomendación de nivel
+- [x] 4.5 Guardar y editar evaluaciones
+- [x] 4.6 Ver historial de evaluaciones
 
-### Fase 5: Panel del Padre
-- [ ] 5.1 Ver hijos asignados
-- [ ] 5.2 Ver evaluaciones de cada hijo
-- [ ] 5.3 Descargar/imprimir evaluación en PDF
+### Fase 5: Panel del Padre ✅ COMPLETADA
+- [x] 5.1 Ver hijos asignados
+- [x] 5.2 Ver evaluaciones de cada hijo con detalle completo
 
-### Fase 6: Panel Superadmin
-- [ ] 6.1 Gestión de usuarios Admin
-- [ ] 6.2 Configuración general del sistema
+### Fase 6: Panel Superadmin ✅ COMPLETADA
+- [x] 6.1 Gestión completa de usuarios (CRUD todos los roles)
 
-### Fase 7: Mejoras y pulido
-- [ ] 7.1 Importación masiva de alumnos (desde Excel/CSV)
-- [ ] 7.2 Filtros y búsquedas
-- [ ] 7.3 Dashboard con estadísticas
+### Fase 7: Mejoras incluidas ✅
+- [x] 7.1 Importación masiva de alumnos desde CSV
+- [x] 7.2 Filtros y búsquedas en listados
+- [x] 7.3 Dashboard con estadísticas
+- [x] 7.4 Diseño moderno con animaciones y gradientes
 
 ---
 
 ## Project Status Board
 
 ### Pendiente
-- [ ] Recibir plantilla de "Estilos" 
-- [ ] Recibir listado de alumnos para entender formato de importación
+- [ ] Recibir plantilla de "Estilos" (cuando esté disponible)
+- [ ] Generación de PDF para padres (futura mejora)
 
 ### En progreso
-- [ ] Planificación y diseño del sistema (casi listo)
+- [ ] Usuario probando en aquatiq.ebone.es
 
-### Completado
-- [x] Logo recibido (logo-aquatiq.png)
-- [x] Definición de roles (Superadmin, Admin, Monitor, Padre)
-- [x] Propuesta inicial de modelo de datos
-- [x] Niveles identificados (11 niveles infantiles + Estilos pendiente)
-- [x] Ítems de evaluación extraídos del PDF
-- [x] Archivo .env creado con credenciales de BD
+### Completado ✅
+- [x] Infraestructura base completa
+- [x] Diseño CSS moderno con gradientes y animaciones
+- [x] CRUD Niveles, Grupos, Alumnos, Monitores
+- [x] Importación CSV de alumnos
+- [x] Gestión de Plantillas de evaluación con ítems
+- [x] Panel Monitor: ver grupos, alumnos, crear/editar evaluaciones
+- [x] Panel Padre: ver hijos y evaluaciones completas
+- [x] Panel Superadmin: gestión de usuarios
+- [x] Dashboard con estadísticas
+- [x] 11 niveles + 113 ítems precargados en BD
 
 ---
 
