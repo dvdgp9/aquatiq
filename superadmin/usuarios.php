@@ -135,7 +135,7 @@ include INCLUDES_PATH . '/header.php';
 ?>
 
 <div class="page-header">
-    <h1>👤 Gestión de Usuarios</h1>
+    <h1><i class="iconoir-user"></i> Gestión de Usuarios</h1>
     <div class="actions">
         <button type="button" class="btn btn-primary" onclick="document.getElementById('modal-crear').showModal()">
             + Nuevo Usuario
@@ -241,7 +241,7 @@ include INCLUDES_PATH . '/header.php';
 <?php else: ?>
 <div class="card">
     <div class="empty-state">
-        <div class="empty-state-icon">👤</div>
+        <div class="empty-state-icon"><i class="iconoir-user"></i></div>
         <h3>No hay usuarios</h3>
         <p>No se encontraron usuarios con los filtros seleccionados.</p>
     </div>

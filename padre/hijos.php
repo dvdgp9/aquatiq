@@ -28,7 +28,7 @@ include INCLUDES_PATH . '/header.php';
 ?>
 
 <div class="page-header">
-    <h1>👨‍👧‍👦 Mis Hijos</h1>
+    <h1><i class="iconoir-community"></i> Mis Hijos</h1>
 </div>
 
 <?php if (count($hijos) > 0): ?>
@@ -69,7 +69,7 @@ include INCLUDES_PATH . '/header.php';
 <?php else: ?>
 <div class="card">
     <div class="empty-state">
-        <div class="empty-state-icon">👨‍👧‍👦</div>
+        <div class="empty-state-icon"><i class="iconoir-community"></i></div>
         <h3>Sin hijos asignados</h3>
         <p>Contacta con el administrador para que asigne a tus hijos a tu cuenta.</p>
     </div>

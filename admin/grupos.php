@@ -91,7 +91,7 @@ include INCLUDES_PATH . '/header.php';
 ?>
 
 <div class="page-header">
-    <h1>👥 Grupos</h1>
+    <h1><i class="iconoir-group"></i> Grupos</h1>
     <div class="actions">
         <?php if ($showInactive): ?>
         <a href="/admin/grupos.php" class="btn btn-secondary">Ver solo activos</a>
@@ -163,7 +163,7 @@ include INCLUDES_PATH . '/header.php';
 <?php else: ?>
 <div class="card">
     <div class="empty-state">
-        <div class="empty-state-icon">👥</div>
+        <div class="empty-state-icon"><i class="iconoir-group"></i></div>
         <h3>No hay grupos</h3>
         <p>Crea el primer grupo para comenzar.</p>
     </div>

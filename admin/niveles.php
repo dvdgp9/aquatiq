@@ -86,7 +86,7 @@ include INCLUDES_PATH . '/header.php';
 ?>
 
 <div class="page-header">
-    <h1>📊 Niveles</h1>
+    <h1><i class="iconoir-stats-up-square"></i> Niveles</h1>
     <div class="actions">
         <?php if ($showInactive): ?>
         <a href="/admin/niveles.php" class="btn btn-secondary">Ver solo activos</a>
@@ -152,7 +152,7 @@ include INCLUDES_PATH . '/header.php';
 <?php else: ?>
 <div class="card">
     <div class="empty-state">
-        <div class="empty-state-icon">📊</div>
+        <div class="empty-state-icon"><i class="iconoir-stats-up-square"></i></div>
         <h3>No hay niveles</h3>
         <p>Crea el primer nivel para comenzar.</p>
     </div>

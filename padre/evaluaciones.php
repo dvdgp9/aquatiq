@@ -57,7 +57,7 @@ include INCLUDES_PATH . '/header.php';
 <div class="card" style="margin-bottom: 1.5rem;">
     <div style="display: flex; align-items: center; gap: 1rem;">
         <div style="background: var(--accent-light); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
-            🎓
+            <i class="iconoir-graduation-cap"></i>
         </div>
         <div>
             <h2 style="margin: 0;"><?= sanitize($hijo['nombre'] . ' ' . $hijo['apellido1'] . ' ' . $hijo['apellido2']) ?></h2>
@@ -85,12 +85,12 @@ include INCLUDES_PATH . '/header.php';
         </div>
         
         <p style="color: var(--gray-500); margin-bottom: 0.5rem;">
-            📅 <?= sanitize(str_replace('_', ' ', ucfirst($eval['periodo']))) ?>
+            <i class="iconoir-calendar"></i> <?= sanitize(str_replace('_', ' ', ucfirst($eval['periodo']))) ?>
         </p>
         
         <?php if ($eval['nivel_recomendado']): ?>
         <p style="margin-bottom: 1rem;">
-            🎯 Recomendación: <span class="badge badge-success"><?= sanitize($eval['nivel_recomendado']) ?></span>
+            <i class="iconoir-target"></i> Recomendación: <span class="badge badge-success"><?= sanitize($eval['nivel_recomendado']) ?></span>
         </p>
         <?php endif; ?>
         
@@ -103,7 +103,7 @@ include INCLUDES_PATH . '/header.php';
 <?php else: ?>
 <div class="card">
     <div class="empty-state">
-        <div class="empty-state-icon">📋</div>
+        <div class="empty-state-icon"><i class="iconoir-clipboard-check"></i></div>
         <h3>Sin evaluaciones</h3>
         <p>Aún no hay evaluaciones registradas para <?= sanitize($hijo['nombre']) ?>.</p>
     </div>

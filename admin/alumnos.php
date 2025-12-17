@@ -184,10 +184,10 @@ include INCLUDES_PATH . '/header.php';
 ?>
 
 <div class="page-header">
-    <h1>🎓 Alumnos</h1>
+    <h1><i class="iconoir-graduation-cap"></i> Alumnos</h1>
     <div class="actions">
         <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-import').showModal()">
-            📥 Importar CSV
+            <i class="iconoir-download"></i> Importar CSV
         </button>
         <button type="button" class="btn btn-primary" onclick="document.getElementById('modal-crear').showModal()">
             + Nuevo Alumno
@@ -293,7 +293,7 @@ include INCLUDES_PATH . '/header.php';
 <?php else: ?>
 <div class="card">
     <div class="empty-state">
-        <div class="empty-state-icon">🎓</div>
+        <div class="empty-state-icon"><i class="iconoir-graduation-cap"></i></div>
         <h3>No hay alumnos</h3>
         <p>Crea el primer alumno o importa desde un CSV.</p>
     </div>

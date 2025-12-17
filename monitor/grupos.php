@@ -27,7 +27,7 @@ include INCLUDES_PATH . '/header.php';
 ?>
 
 <div class="page-header">
-    <h1>👥 Mis Grupos</h1>
+    <h1><i class="iconoir-group"></i> Mis Grupos</h1>
 </div>
 
 <?php if (count($grupos) > 0): ?>
@@ -62,7 +62,7 @@ include INCLUDES_PATH . '/header.php';
 <?php else: ?>
 <div class="card">
     <div class="empty-state">
-        <div class="empty-state-icon">👥</div>
+        <div class="empty-state-icon"><i class="iconoir-group"></i></div>
         <h3>Sin grupos asignados</h3>
         <p>Contacta con el administrador para que te asigne grupos.</p>
     </div>

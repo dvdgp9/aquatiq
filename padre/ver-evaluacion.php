@@ -85,7 +85,7 @@ include INCLUDES_PATH . '/header.php';
 <!-- Resultados -->
 <div class="card" style="margin-bottom: 1.5rem;">
     <div class="card-header">
-        <h3 class="card-title">📋 Resultados de la evaluación</h3>
+        <h3 class="card-title"><i class="iconoir-clipboard-check"></i> Resultados de la evaluación</h3>
     </div>
     
     <?php 
@@ -140,7 +140,7 @@ include INCLUDES_PATH . '/header.php';
 <?php if ($evaluacion['nivel_recomendado'] || $evaluacion['observaciones']): ?>
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">🎯 Recomendación del monitor</h3>
+        <h3 class="card-title"><i class="iconoir-target"></i> Recomendación del monitor</h3>
     </div>
     
     <?php if ($evaluacion['nivel_recomendado']): ?>

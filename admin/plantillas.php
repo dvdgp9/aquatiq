@@ -154,7 +154,7 @@ include INCLUDES_PATH . '/header.php';
     </div>
     <?php else: ?>
     <div class="empty-state">
-        <div class="empty-state-icon">📝</div>
+        <div class="empty-state-icon"><i class="iconoir-edit-pencil"></i></div>
         <h3>Sin ítems</h3>
         <p>Añade el primer ítem de evaluación.</p>
     </div>
@@ -224,7 +224,7 @@ function editItem(id, texto) {
 <?php else: ?>
 <!-- Lista de plantillas -->
 <div class="page-header">
-    <h1>📋 Plantillas de Evaluación</h1>
+    <h1><i class="iconoir-clipboard-check"></i> Plantillas de Evaluación</h1>
 </div>
 
 <p style="color: var(--gray-500); margin-bottom: 1.5rem;">
@@ -253,7 +253,7 @@ function editItem(id, texto) {
 <?php if (count($plantillas) === 0): ?>
 <div class="card">
     <div class="empty-state">
-        <div class="empty-state-icon">📋</div>
+        <div class="empty-state-icon"><i class="iconoir-clipboard-check"></i></div>
         <h3>No hay plantillas</h3>
         <p>Las plantillas se crean automáticamente al crear niveles.</p>
     </div>

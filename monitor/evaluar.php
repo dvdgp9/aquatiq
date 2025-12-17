@@ -137,7 +137,7 @@ include INCLUDES_PATH . '/header.php';
 <div class="card" style="margin-bottom: 1.5rem;">
     <div style="display: flex; align-items: center; gap: 1rem;">
         <div style="background: var(--accent-light); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-            🎓
+            <i class="iconoir-graduation-cap"></i>
         </div>
         <div>
             <h3 style="margin: 0;"><?= sanitize($alumno['apellido1'] . ' ' . $alumno['apellido2'] . ', ' . $alumno['nombre']) ?></h3>
@@ -257,13 +257,13 @@ include INCLUDES_PATH . '/header.php';
     <div style="display: flex; gap: 1rem; justify-content: flex-end;">
         <a href="/monitor/alumnos.php?grupo=<?= $alumno['grupo_id'] ?>" class="btn btn-secondary">Cancelar</a>
         <button type="submit" class="btn btn-primary btn-lg">
-            💾 Guardar Evaluación
+            <i class="iconoir-save-floppy-disk"></i> Guardar Evaluación
         </button>
     </div>
     <?php elseif ($plantilla_id): ?>
     <div class="card">
         <div class="empty-state">
-            <div class="empty-state-icon">📝</div>
+            <div class="empty-state-icon"><i class="iconoir-edit-pencil"></i></div>
             <h3>Sin ítems</h3>
             <p>Esta plantilla no tiene ítems configurados.</p>
         </div>
@@ -271,7 +271,7 @@ include INCLUDES_PATH . '/header.php';
     <?php else: ?>
     <div class="card">
         <div class="empty-state">
-            <div class="empty-state-icon">📋</div>
+            <div class="empty-state-icon"><i class="iconoir-clipboard-check"></i></div>
             <h3>Selecciona un nivel</h3>
             <p>Elige el nivel a evaluar para ver los ítems.</p>
         </div>

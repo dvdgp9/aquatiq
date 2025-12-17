@@ -100,7 +100,7 @@ include INCLUDES_PATH . '/header.php';
 <?php else: ?>
 <div class="card">
     <div class="empty-state">
-        <div class="empty-state-icon">🎓</div>
+        <div class="empty-state-icon"><i class="iconoir-graduation-cap"></i></div>
         <h3>Sin alumnos</h3>
         <p>Este grupo no tiene alumnos asignados.</p>
     </div>

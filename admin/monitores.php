@@ -148,7 +148,7 @@ include INCLUDES_PATH . '/header.php';
 ?>
 
 <div class="page-header">
-    <h1>🏊 Monitores</h1>
+    <h1><i class="iconoir-swimming"></i> Monitores</h1>
     <div class="actions">
         <?php if ($showInactive): ?>
         <a href="/admin/monitores.php" class="btn btn-secondary">Ver solo activos</a>
@@ -218,7 +218,7 @@ include INCLUDES_PATH . '/header.php';
 <?php else: ?>
 <div class="card">
     <div class="empty-state">
-        <div class="empty-state-icon">🏊</div>
+        <div class="empty-state-icon"><i class="iconoir-swimming"></i></div>
         <h3>No hay monitores</h3>
         <p>Crea el primer monitor para comenzar.</p>
     </div>

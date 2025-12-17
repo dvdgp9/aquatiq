@@ -63,7 +63,7 @@ include INCLUDES_PATH . '/header.php';
 <div class="card" style="margin-bottom: 1.5rem;">
     <div style="display: flex; align-items: center; gap: 1rem;">
         <div style="background: var(--accent-light); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-            🎓
+            <i class="iconoir-graduation-cap"></i>
         </div>
         <div>
             <h3 style="margin: 0;"><?= sanitize($alumno['apellido1'] . ' ' . $alumno['apellido2'] . ', ' . $alumno['nombre']) ?></h3>
@@ -89,12 +89,12 @@ include INCLUDES_PATH . '/header.php';
         </div>
         
         <p style="color: var(--gray-500); margin-bottom: 0.5rem;">
-            📅 Período: <strong><?= sanitize(str_replace('_', ' ', ucfirst($eval['periodo']))) ?></strong>
+            <i class="iconoir-calendar"></i> Período: <strong><?= sanitize(str_replace('_', ' ', ucfirst($eval['periodo']))) ?></strong>
         </p>
         
         <?php if ($eval['nivel_recomendado']): ?>
         <p style="margin-bottom: 0.5rem;">
-            🎯 Recomendación: <span class="badge badge-success"><?= sanitize($eval['nivel_recomendado']) ?></span>
+            <i class="iconoir-target"></i> Recomendación: <span class="badge badge-success"><?= sanitize($eval['nivel_recomendado']) ?></span>
         </p>
         <?php endif; ?>
         
@@ -118,7 +118,7 @@ include INCLUDES_PATH . '/header.php';
 <?php else: ?>
 <div class="card">
     <div class="empty-state">
-        <div class="empty-state-icon">📋</div>
+        <div class="empty-state-icon"><i class="iconoir-clipboard-check"></i></div>
         <h3>Sin evaluaciones</h3>
         <p>Este alumno aún no tiene evaluaciones.</p>
         <a href="/monitor/evaluar.php?alumno=<?= $alumno_id ?>" class="btn btn-primary" style="margin-top: 1rem;">
