@@ -23,7 +23,7 @@ include INCLUDES_PATH . '/header.php';
 ?>
 
 <div class="dashboard-welcome">
-    <h1><i class="iconoir-hand-wave"></i> Bienvenido, <?= sanitize($user['nombre']) ?></h1>
+    <h1><i class="iconoir-peace-hand"></i> Bienvenido, <?= sanitize($user['nombre']) ?></h1>
     <p>Panel de control de <?= APP_NAME ?> - Piscina Cubierta Municipal</p>
 </div>
 
