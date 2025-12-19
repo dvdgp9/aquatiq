@@ -85,46 +85,46 @@ include INCLUDES_PATH . '/header.php';
     <h1><i class="iconoir-clipboard-check"></i> Evaluaciones</h1>
 </div>
 
+<?php if (!$alumno): ?>
 <div class="card" style="margin-bottom: 1.5rem;">
     <div class="card-header">
         <h3 class="card-title">Accede a las evaluaciones</h3>
     </div>
-    <form method="post" class="form" style="display: grid; gap: 1rem;">
-        <div>
-            <label for="numero_usuario" class="form-label">Número de usuario</label>
-            <input type="text" id="numero_usuario" name="numero_usuario" class="input" value="<?= isset($numeroUsuario) ? sanitize($numeroUsuario) : '' ?>" required>
+    <form method="post">
+        <div class="form-group">
+            <label for="numero_usuario">Número de usuario</label>
+            <input type="text" id="numero_usuario" name="numero_usuario" class="form-control" value="<?= isset($numeroUsuario) ? sanitize($numeroUsuario) : '' ?>" required autofocus>
         </div>
-        <div>
-            <label for="nombre_hijo" class="form-label">Nombre y apellidos del alumno</label>
-            <input type="text" id="nombre_hijo" name="nombre_hijo" class="input" placeholder="Ej: Ana García López" value="<?= isset($nombreHijo) ? sanitize($nombreHijo) : '' ?>" required>
-            <small style="color: var(--gray-500);">Debe coincidir con el nombre registrado.</small>
+        <div class="form-group">
+            <label for="nombre_hijo">Nombre y apellidos del alumno</label>
+            <input type="text" id="nombre_hijo" name="nombre_hijo" class="form-control" placeholder="Ej: Ana García López" value="<?= isset($nombreHijo) ? sanitize($nombreHijo) : '' ?>" required>
+            <small style="color: var(--gray-500); display: block; margin-top: 0.5rem;">Debe coincidir con el nombre registrado.</small>
         </div>
-        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-            <button type="submit" class="btn btn-primary"><i class="iconoir-search"></i> Buscar evaluaciones</button>
-            <?php if ($alumno): ?>
-            <a href="/evaluaciones.php?reset=1" class="btn btn-secondary btn-ghost">Buscar otro alumno</a>
-            <?php endif; ?>
-        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;"><i class="iconoir-search"></i> Buscar evaluaciones</button>
     </form>
 </div>
-
-<?php if ($alumno): ?>
+<?php else: ?>
 <div class="card" style="margin-bottom: 1.5rem;">
-    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-        <div style="background: var(--accent-light); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
-            <i class="iconoir-graduation-cap"></i>
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="background: var(--accent-light); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                <i class="iconoir-graduation-cap"></i>
+            </div>
+            <div>
+                <h2 style="margin: 0;"><?= sanitize($alumno['nombre'] . ' ' . $alumno['apellido1'] . ' ' . $alumno['apellido2']) ?></h2>
+                <p style="margin: 0; color: var(--gray-500);">
+                    <?php if ($alumno['grupo_nombre']): ?>
+                    <?= sanitize($alumno['grupo_nombre']) ?>
+                    <?php endif; ?>
+                    <?php if ($alumno['nivel_nombre']): ?>
+                     • <span class="badge badge-info"><?= sanitize($alumno['nivel_nombre']) ?></span>
+                    <?php endif; ?>
+                </p>
+            </div>
         </div>
-        <div>
-            <h2 style="margin: 0;"><?= sanitize($alumno['nombre'] . ' ' . $alumno['apellido1'] . ' ' . $alumno['apellido2']) ?></h2>
-            <p style="margin: 0; color: var(--gray-500);">
-                <?php if ($alumno['grupo_nombre']): ?>
-                <?= sanitize($alumno['grupo_nombre']) ?>
-                <?php endif; ?>
-                <?php if ($alumno['nivel_nombre']): ?>
-                 • <span class="badge badge-info"><?= sanitize($alumno['nivel_nombre']) ?></span>
-                <?php endif; ?>
-            </p>
-        </div>
+        <a href="/evaluaciones.php?reset=1" class="btn btn-secondary" style="white-space: nowrap;">
+            <i class="iconoir-refresh"></i> Buscar otro alumno
+        </a>
     </div>
 </div>
 
