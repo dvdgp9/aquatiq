@@ -656,8 +656,8 @@ dialog.modal {
     border: none;
     border-radius: var(--radius);
     box-shadow: var(--shadow-xl);
-    padding: 0;
-    max-width: 500px;
+    padding: 20px;
+    max-width: 1000px;
     width: 90%;
     position: fixed;
     top: 50%;

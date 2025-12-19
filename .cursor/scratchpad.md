@@ -150,6 +150,14 @@ monitores_grupos (monitor_id, grupo_id) -- relación N:M
   - `/evaluacion.php`: detalle de evaluación validando que pertenece al alumno identificado en la sesión pública.
 - Falta probar flujo completo y validar con datos reales en entorno.
 
+- **Nueva funcionalidad: Importar desde Excel** (`admin/alumnos.php`):
+  - Permite pegar datos directamente desde Excel (7 columnas: Nº Usuario, Apellido1, Apellido2, Nombre, Nivel, Grupo, Monitor/email)
+  - Si el grupo no existe → se crea automáticamente
+  - Si el nivel no existe → advertencia
+  - Si el monitor (por email) no existe → advertencia, grupo sin monitor
+  - Si el alumno ya existe (mismo numero_usuario) → actualiza datos y grupo (mantiene historial)
+  - Si el alumno no existe → crea nuevo
+
 ## Configuración del entorno
 
 - **Repositorio**: GitHub (usuario sube manualmente)
