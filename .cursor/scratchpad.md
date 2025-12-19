@@ -116,6 +116,7 @@ monitores_grupos (monitor_id, grupo_id) -- relación N:M
 ### Pendiente
 - [ ] Recibir plantilla de "Estilos" (cuando esté disponible)
 - [ ] Generación de PDF para padres (futura mejora)
+- [ ] Acceso público a evaluaciones (implementado, falta probar end-to-end)
 
 ### En progreso
 - [ ] Usuario probando en aquatiq.ebone.es
@@ -141,6 +142,12 @@ monitores_grupos (monitor_id, grupo_id) -- relación N:M
 2. ~~Confirmación de los niveles existentes~~ ✅ 11 niveles confirmados
 3. ~~Listado de alumnos para ver formato de importación~~ ✅ CSV con columnas: N.º USUARIO, APELLIDO 1, APELLIDO 2, NOMBRE, CURSO/GRUPO, MONITOR/A
 4. Plantilla de evaluación "Estilos"
+
+**Notas del executor (19-Dec-2025):**
+- Añadido acceso público sin login:
+  - `/evaluaciones.php`: formulario (número de usuario + nombre alumno) que busca alumno activo, guarda id en sesión pública y lista sus evaluaciones.
+  - `/evaluacion.php`: detalle de evaluación validando que pertenece al alumno identificado en la sesión pública.
+- Falta probar flujo completo y validar con datos reales en entorno.
 
 ## Configuración del entorno
 
