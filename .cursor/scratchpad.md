@@ -108,6 +108,7 @@ monitores_grupos (monitor_id, grupo_id) -- relación N:M
 - [x] 7.2 Filtros y búsquedas en listados
 - [x] 7.3 Dashboard con estadísticas
 - [x] 7.4 Diseño moderno con animaciones y gradientes
+- [x] 7.5 Importación desde Excel (pegar directamente)
 
 ---
 
