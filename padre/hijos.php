@@ -1,6 +1,6 @@
 <?php
 /**
- * Aquatiq - Panel Padre: Ver hijos
+ * Aquatiq - Panel Padre: Ver hijas/os
  */
 
 require_once __DIR__ . '/../config/config.php';
@@ -10,7 +10,7 @@ $pageTitle = 'Mis Hijos';
 $pdo = getDBConnection();
 $user = getCurrentUser();
 
-// Obtener hijos asignados al padre
+// Obtener hijas/os asignadas/os al padre
 $stmt = $pdo->prepare("
     SELECT a.*, g.nombre as grupo_nombre, n.nombre as nivel_nombre,
            (SELECT COUNT(*) FROM evaluaciones e WHERE e.alumno_id = a.id) as total_evaluaciones,
@@ -28,7 +28,7 @@ include INCLUDES_PATH . '/header.php';
 ?>
 
 <div class="page-header">
-    <h1><i class="iconoir-community"></i> Mis Hijos</h1>
+    <h1><i class="iconoir-community"></i> Mis hijas/os</h1>
 </div>
 
 <?php if (count($hijos) > 0): ?>
@@ -70,8 +70,8 @@ include INCLUDES_PATH . '/header.php';
 <div class="card">
     <div class="empty-state">
         <div class="empty-state-icon"><i class="iconoir-community"></i></div>
-        <h3>Sin hijos asignados</h3>
-        <p>Contacta con el administrador para que asigne a tus hijos a tu cuenta.</p>
+        <h3>Sin hijas/os asignadas/os</h3>
+        <p>Contacta con el administrador para que asigne a tus hijas/os a tu cuenta.</p>
     </div>
 </div>
 <?php endif; ?>

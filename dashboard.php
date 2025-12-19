@@ -19,6 +19,22 @@ if (canAccessAdmin()) {
     $stats['evaluaciones'] = $pdo->query("SELECT COUNT(*) FROM evaluaciones")->fetchColumn();
 }
 
+// Grupos del monitor (para mostrar directamente en dashboard)
+$gruposMonitor = [];
+if (hasRole('monitor')) {
+    $stmt = $pdo->prepare("
+        SELECT g.*, n.nombre as nivel_nombre, n.id as nivel_id,
+               (SELECT COUNT(*) FROM alumnos a WHERE a.grupo_id = g.id AND a.activo = 1) as total_alumnos
+        FROM grupos g
+        INNER JOIN monitores_grupos mg ON g.id = mg.grupo_id
+        LEFT JOIN niveles n ON g.nivel_id = n.id
+        WHERE mg.monitor_id = ? AND g.activo = 1
+        ORDER BY n.orden, g.nombre
+    ");
+    $stmt->execute([$user['id']]);
+    $gruposMonitor = $stmt->fetchAll();
+}
+
 include INCLUDES_PATH . '/header.php';
 ?>
 
@@ -82,16 +98,39 @@ include INCLUDES_PATH . '/header.php';
         <div class="card-header">
             <h3 class="card-title"><i class="iconoir-group"></i> Mis Grupos</h3>
         </div>
-        <p style="color: var(--gray-500); margin-bottom: 1rem;">Accede a tus grupos asignados para evaluar alumnos.</p>
-        <a href="/monitor/grupos.php" class="btn btn-primary">Ver mis grupos</a>
-    </div>
-    
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title"><i class="iconoir-clipboard-check"></i> Evaluaciones</h3>
+        
+        <?php if (count($gruposMonitor) > 0): ?>
+        <div class="dashboard-grid">
+            <?php foreach ($gruposMonitor as $grupo): ?>
+            <div class="card" style="margin: 0;">
+                <div class="card-header">
+                    <h3 class="card-title"><?= sanitize($grupo['nombre']) ?></h3>
+                    <?php if ($grupo['nivel_nombre']): ?>
+                    <span class="badge badge-info"><?= sanitize($grupo['nivel_nombre']) ?></span>
+                    <?php endif; ?>
+                </div>
+                
+                <?php if ($grupo['horario']): ?>
+                <p style="color: var(--gray-500); margin-bottom: 0.5rem;">
+                    🕐 <?= sanitize($grupo['horario']) ?>
+                </p>
+                <?php endif; ?>
+                
+                <p style="margin-bottom: 1rem;">
+                    <strong><?= $grupo['total_alumnos'] ?></strong> <?= $grupo['total_alumnos'] == 1 ? 'alumna/o' : 'alumnas/os' ?>
+                </p>
+                
+                <div style="display: flex; gap: 0.5rem;">
+                    <a href="/monitor/alumnos.php?grupo=<?= $grupo['id'] ?>" class="btn btn-primary">
+                        Ver alumnas/os
+                    </a>
+                </div>
+            </div>
+            <?php endforeach; ?>
         </div>
-        <p style="color: var(--gray-500); margin-bottom: 1rem;">Crea y gestiona evaluaciones de tus alumnos.</p>
-        <a href="/monitor/evaluaciones.php" class="btn btn-primary">Mis evaluaciones</a>
+        <?php else: ?>
+        <p style="color: var(--gray-500); margin-bottom: 1rem;">Sin grupos asignados.</p>
+        <?php endif; ?>
     </div>
     <?php endif; ?>
     

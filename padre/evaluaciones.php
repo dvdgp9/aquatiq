@@ -1,6 +1,6 @@
 <?php
 /**
- * Aquatiq - Panel Padre: Ver evaluaciones de un hijo
+ * Aquatiq - Panel Padre: Ver evaluaciones de una hija/o
  */
 
 require_once __DIR__ . '/../config/config.php';
@@ -11,7 +11,7 @@ $user = getCurrentUser();
 
 $hijo_id = (int)($_GET['hijo'] ?? 0);
 
-// Verificar que el hijo pertenece a este padre
+// Verificar que la hija/o pertenece a este padre
 $stmt = $pdo->prepare("
     SELECT a.*, g.nombre as grupo_nombre, n.nombre as nivel_nombre
     FROM alumnos a
@@ -23,7 +23,7 @@ $stmt->execute([$hijo_id, $user['id']]);
 $hijo = $stmt->fetch();
 
 if (!$hijo) {
-    setFlashMessage('error', 'No tienes acceso a este alumno.');
+    setFlashMessage('error', 'No tienes acceso a esta alumna/o.');
     redirect('/padre/hijos.php');
 }
 
