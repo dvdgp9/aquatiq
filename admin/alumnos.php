@@ -68,7 +68,7 @@ if (isPost()) {
     if ($action === 'import') {
         if (isset($_FILES['csv_file']) && $_FILES['csv_file']['error'] === UPLOAD_ERR_OK) {
             $file = fopen($_FILES['csv_file']['tmp_name'], 'r');
-            $header = fgetcsv($file, 0, ';');
+            $header = fgetcsv($file, 0, ';'); // Leer cabecera
             
             $imported = 0;
             $errors = 0;
@@ -82,6 +82,7 @@ if (isPost()) {
                     $grupo_nombre = trim($row[4] ?? '');
                     
                     if (!empty($nombre) && !empty($apellido1)) {
+                        // Buscar grupo por nombre
                         $grupo_id = null;
                         if (!empty($grupo_nombre)) {
                             $stmt = $pdo->prepare("SELECT id FROM grupos WHERE nombre LIKE ? AND activo = 1 LIMIT 1");
@@ -92,14 +93,17 @@ if (isPost()) {
                             }
                         }
                         
+                        // Verificar si ya existe
                         $stmt = $pdo->prepare("SELECT id FROM alumnos WHERE numero_usuario = ? AND numero_usuario != ''");
                         $stmt->execute([$numero_usuario]);
                         $existing = $stmt->fetch();
                         
                         if ($existing) {
+                            // Actualizar
                             $stmt = $pdo->prepare("UPDATE alumnos SET nombre = ?, apellido1 = ?, apellido2 = ?, grupo_id = ? WHERE id = ?");
                             $stmt->execute([$nombre, $apellido1, $apellido2, $grupo_id, $existing['id']]);
                         } else {
+                            // Insertar
                             $stmt = $pdo->prepare("INSERT INTO alumnos (numero_usuario, nombre, apellido1, apellido2, grupo_id) VALUES (?, ?, ?, ?, ?)");
                             $stmt->execute([$numero_usuario, $nombre, $apellido1, $apellido2, $grupo_id]);
                         }
@@ -116,154 +120,150 @@ if (isPost()) {
             setFlashMessage('error', 'Error al subir el archivo.');
         }
     }
-    
-    if ($action === 'bulk_import') {
-        $rawData = trim($_POST['bulk_data'] ?? '');
-        
-        if (empty($rawData)) {
-            setFlashMessage('error', 'No se recibieron datos para importar.');
+
+    if ($action === 'paste') {
+        $raw = trim($_POST['paste_data'] ?? '');
+        if ($raw === '') {
+            setFlashMessage('error', 'Pega datos desde Excel antes de importar.');
             redirect('/admin/alumnos.php');
         }
-        
-        $lines = explode("\n", $rawData);
+
+        $lines = preg_split('/\r\n|\r|\n/', $raw);
         $stats = [
             'alumnos_creados' => 0,
             'alumnos_actualizados' => 0,
             'grupos_creados' => 0,
             'grupos_reutilizados' => 0,
-            'advertencias' => [],
-            'errores' => []
+            'monitores_asignados' => 0,
+            'advertencias' => []
         ];
-        
-        $pdo->beginTransaction();
-        
-        try {
-            foreach ($lines as $idx => $line) {
-                $lineNum = $idx + 1;
-                $line = trim($line);
-                if (empty($line)) continue;
-                
-                $cols = preg_split('/\t/', $line);
-                if (count($cols) < 7) {
-                    $stats['errores'][] = "Línea $lineNum: formato incorrecto (se esperan 7 columnas)";
-                    continue;
-                }
-                
-                $numero_usuario = trim($cols[0]);
-                $apellido1 = trim($cols[1]);
-                $apellido2 = trim($cols[2]);
-                $nombre = trim($cols[3]);
-                $nivel_nombre = trim($cols[4]);
-                $grupo_nombre = trim($cols[5]);
-                $monitor_email = trim($cols[6]);
-                
-                if (empty($nombre) || empty($apellido1)) {
-                    $stats['errores'][] = "Línea $lineNum: nombre y apellido1 obligatorios";
-                    continue;
-                }
-                
-                if (empty($nivel_nombre)) {
-                    $stats['errores'][] = "Línea $lineNum: nivel obligatorio";
-                    continue;
-                }
-                
-                if (empty($grupo_nombre)) {
-                    $stats['errores'][] = "Línea $lineNum: grupo obligatorio";
-                    continue;
-                }
-                
-                $stmt = $pdo->prepare("SELECT id FROM niveles WHERE LOWER(TRIM(nombre)) = LOWER(?) AND activo = 1 LIMIT 1");
-                $stmt->execute([$nivel_nombre]);
-                $nivel = $stmt->fetch();
-                
-                if (!$nivel) {
-                    $stats['errores'][] = "Línea $lineNum: nivel '$nivel_nombre' no encontrado";
-                    continue;
-                }
-                $nivel_id = $nivel['id'];
-                
-                $stmt = $pdo->prepare("SELECT id FROM grupos WHERE LOWER(TRIM(nombre)) = LOWER(?) AND nivel_id = ? AND activo = 1 LIMIT 1");
-                $stmt->execute([$grupo_nombre, $nivel_id]);
-                $grupo = $stmt->fetch();
-                
-                if ($grupo) {
-                    $grupo_id = $grupo['id'];
-                    if (!isset($stats['_grupos_usados'][$grupo_id])) {
-                        $stats['grupos_reutilizados']++;
-                        $stats['_grupos_usados'][$grupo_id] = true;
-                    }
-                } else {
-                    $stmt = $pdo->prepare("INSERT INTO grupos (nombre, nivel_id) VALUES (?, ?)");
-                    $stmt->execute([$grupo_nombre, $nivel_id]);
-                    $grupo_id = $pdo->lastInsertId();
-                    $stats['grupos_creados']++;
-                    $stats['_grupos_usados'][$grupo_id] = true;
-                }
-                
-                if (!empty($monitor_email)) {
-                    $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE LOWER(TRIM(email)) = LOWER(?) AND rol = 'monitor' AND activo = 1 LIMIT 1");
-                    $stmt->execute([$monitor_email]);
-                    $monitor = $stmt->fetch();
-                    
-                    if ($monitor) {
-                        $monitor_id = $monitor['id'];
-                        $stmt = $pdo->prepare("SELECT 1 FROM monitores_grupos WHERE monitor_id = ? AND grupo_id = ?");
-                        $stmt->execute([$monitor_id, $grupo_id]);
-                        if (!$stmt->fetch()) {
-                            $stmt = $pdo->prepare("INSERT INTO monitores_grupos (monitor_id, grupo_id) VALUES (?, ?)");
-                            $stmt->execute([$monitor_id, $grupo_id]);
-                        }
-                    } else {
-                        $stats['advertencias'][] = "Línea $lineNum: monitor '$monitor_email' no encontrado, grupo sin monitor asignado";
-                    }
-                }
-                
-                if (!empty($numero_usuario)) {
-                    $stmt = $pdo->prepare("SELECT id FROM alumnos WHERE numero_usuario = ?");
-                    $stmt->execute([$numero_usuario]);
-                    $existing = $stmt->fetch();
-                    
-                    if ($existing) {
-                        $stmt = $pdo->prepare("UPDATE alumnos SET nombre = ?, apellido1 = ?, apellido2 = ?, grupo_id = ? WHERE id = ?");
-                        $stmt->execute([$nombre, $apellido1, $apellido2, $grupo_id, $existing['id']]);
-                        $stats['alumnos_actualizados']++;
-                    } else {
-                        $stmt = $pdo->prepare("INSERT INTO alumnos (numero_usuario, nombre, apellido1, apellido2, grupo_id) VALUES (?, ?, ?, ?, ?)");
-                        $stmt->execute([$numero_usuario, $nombre, $apellido1, $apellido2, $grupo_id]);
-                        $stats['alumnos_creados']++;
-                    }
-                } else {
-                    $stmt = $pdo->prepare("INSERT INTO alumnos (nombre, apellido1, apellido2, grupo_id) VALUES (?, ?, ?, ?)");
-                    $stmt->execute([$nombre, $apellido1, $apellido2, $grupo_id]);
-                    $stats['alumnos_creados']++;
-                }
-            }
-            
-            $pdo->commit();
-            
-            $mensaje = "Importación completada: ";
-            $partes = [];
-            if ($stats['alumnos_creados'] > 0) $partes[] = "{$stats['alumnos_creados']} alumno(s) creado(s)";
-            if ($stats['alumnos_actualizados'] > 0) $partes[] = "{$stats['alumnos_actualizados']} alumno(s) actualizado(s)";
-            if ($stats['grupos_creados'] > 0) $partes[] = "{$stats['grupos_creados']} grupo(s) creado(s)";
-            if ($stats['grupos_reutilizados'] > 0) $partes[] = "{$stats['grupos_reutilizados']} grupo(s) reutilizado(s)";
-            $mensaje .= implode(', ', $partes) ?: "sin cambios";
-            
-            if (count($stats['advertencias']) > 0) {
-                $mensaje .= ". Advertencias: " . implode('; ', array_slice($stats['advertencias'], 0, 3));
-                if (count($stats['advertencias']) > 3) $mensaje .= " (+" . (count($stats['advertencias']) - 3) . " más)";
-            }
-            if (count($stats['errores']) > 0) {
-                $mensaje .= ". Errores: " . implode('; ', array_slice($stats['errores'], 0, 3));
-                if (count($stats['errores']) > 3) $mensaje .= " (+" . (count($stats['errores']) - 3) . " más)";
-            }
-            
-            setFlashMessage(count($stats['errores']) > 0 ? 'error' : 'success', $mensaje);
-            
-        } catch (Exception $e) {
-            $pdo->rollBack();
-            setFlashMessage('error', 'Error en la importación: ' . $e->getMessage());
+
+        // Cache niveles por nombre lower
+        $nivelesStmt = $pdo->query("SELECT id, LOWER(nombre) as nombre_lower FROM niveles");
+        $nivelesMap = [];
+        while ($n = $nivelesStmt->fetch(PDO::FETCH_ASSOC)) {
+            $nivelesMap[$n['nombre_lower']] = $n['id'];
         }
+
+        // Cache grupos por nombre lower
+        $gruposStmt = $pdo->query("SELECT id, LOWER(nombre) as nombre_lower, nivel_id FROM grupos");
+        $gruposMap = [];
+        while ($g = $gruposStmt->fetch(PDO::FETCH_ASSOC)) {
+            $gruposMap[$g['nombre_lower']] = $g;
+        }
+
+        // Cache monitores por email lower
+        $monStmt = $pdo->query("SELECT id, LOWER(email) as email_lower FROM usuarios WHERE rol = 'monitor' AND activo = 1");
+        $monitoresMap = [];
+        while ($m = $monStmt->fetch(PDO::FETCH_ASSOC)) {
+            $monitoresMap[$m['email_lower']] = $m['id'];
+        }
+
+        foreach ($lines as $index => $line) {
+            if (trim($line) === '') {
+                continue;
+            }
+            $cols = preg_split("/\t/", $line);
+            if (count($cols) < 7) {
+                $stats['advertencias'][] = "Línea " . ($index + 1) . ": columnas insuficientes";
+                continue;
+            }
+
+            [$numUsuario, $ap1, $ap2, $nombre, $nivelNombre, $grupoNombre, $monitorEmail] = array_map('trim', $cols);
+
+            if ($nombre === '' || $ap1 === '') {
+                $stats['advertencias'][] = "Línea " . ($index + 1) . ": nombre y primer apellido son obligatorios";
+                continue;
+            }
+
+            if ($grupoNombre === '') {
+                $stats['advertencias'][] = "Línea " . ($index + 1) . ": falta grupo";
+                continue;
+            }
+
+            // Nivel
+            $nivelId = null;
+            if ($nivelNombre !== '') {
+                $nivelKey = mb_strtolower($nivelNombre, 'UTF-8');
+                if (isset($nivelesMap[$nivelKey])) {
+                    $nivelId = $nivelesMap[$nivelKey];
+                } else {
+                    $stats['advertencias'][] = "Línea " . ($index + 1) . ": nivel '$nivelNombre' no encontrado, se crea grupo sin nivel";
+                }
+            }
+
+            // Grupo
+            $grupoKey = mb_strtolower($grupoNombre, 'UTF-8');
+            $grupoId = null;
+            if (isset($gruposMap[$grupoKey])) {
+                $grupoId = $gruposMap[$grupoKey]['id'];
+                // Actualizar nivel si no tiene y ahora tenemos uno
+                if ($nivelId && empty($gruposMap[$grupoKey]['nivel_id'])) {
+                    $upd = $pdo->prepare("UPDATE grupos SET nivel_id = ? WHERE id = ?");
+                    $upd->execute([$nivelId, $grupoId]);
+                    $gruposMap[$grupoKey]['nivel_id'] = $nivelId;
+                }
+                $stats['grupos_reutilizados']++;
+            } else {
+                $stmt = $pdo->prepare("INSERT INTO grupos (nombre, nivel_id, activo) VALUES (?, ?, 1)");
+                $stmt->execute([$grupoNombre, $nivelId]);
+                $grupoId = (int)$pdo->lastInsertId();
+                $gruposMap[$grupoKey] = ['id' => $grupoId, 'nombre_lower' => $grupoKey, 'nivel_id' => $nivelId];
+                $stats['grupos_creados']++;
+            }
+
+            // Monitor por email (opcional)
+            $monitorId = null;
+            if ($monitorEmail !== '') {
+                $monKey = mb_strtolower($monitorEmail, 'UTF-8');
+                if (isset($monitoresMap[$monKey])) {
+                    $monitorId = $monitoresMap[$monKey];
+                    // Asignar monitor a grupo si no existe
+                    $stmt = $pdo->prepare("SELECT 1 FROM monitores_grupos WHERE monitor_id = ? AND grupo_id = ?");
+                    $stmt->execute([$monitorId, $grupoId]);
+                    if (!$stmt->fetchColumn()) {
+                        $ins = $pdo->prepare("INSERT INTO monitores_grupos (monitor_id, grupo_id) VALUES (?, ?)");
+                        $ins->execute([$monitorId, $grupoId]);
+                        $stats['monitores_asignados']++;
+                    }
+                } else {
+                    $stats['advertencias'][] = "Línea " . ($index + 1) . ": monitor no encontrado ($monitorEmail)";
+                }
+            }
+
+            // Alumno: buscar por numero_usuario si viene informado
+            $alumnoId = null;
+            if ($numUsuario !== '') {
+                $stmt = $pdo->prepare("SELECT id FROM alumnos WHERE numero_usuario = ? AND numero_usuario != '' LIMIT 1");
+                $stmt->execute([$numUsuario]);
+                $alumnoId = $stmt->fetchColumn();
+            }
+
+            if ($alumnoId) {
+                $stmt = $pdo->prepare("UPDATE alumnos SET nombre = ?, apellido1 = ?, apellido2 = ?, grupo_id = ? WHERE id = ?");
+                $stmt->execute([$nombre, $ap1, $ap2, $grupoId, $alumnoId]);
+                $stats['alumnos_actualizados']++;
+            } else {
+                $stmt = $pdo->prepare("INSERT INTO alumnos (numero_usuario, nombre, apellido1, apellido2, grupo_id, activo) VALUES (?, ?, ?, ?, ?, 1)");
+                $stmt->execute([$numUsuario, $nombre, $ap1, $ap2, $grupoId]);
+                $stats['alumnos_creados']++;
+            }
+        }
+
+        $mensaje = "Pegado completado: {$stats['alumnos_creados']} creados, {$stats['alumnos_actualizados']} actualizados, {$stats['grupos_creados']} grupos creados";
+        if ($stats['grupos_reutilizados'] > 0) {
+            $mensaje .= ", {$stats['grupos_reutilizados']} grupos reutilizados";
+        }
+        if ($stats['monitores_asignados'] > 0) {
+            $mensaje .= ", {$stats['monitores_asignados']} monitores asignados";
+        }
+        if (count($stats['advertencias']) > 0) {
+            $mensaje .= ". Advertencias: " . count($stats['advertencias']);
+            // Guardar advertencias en sesión para mostrar al usuario
+            $_SESSION['import_warnings'] = $stats['advertencias'];
+        }
+
+        setFlashMessage('success', $mensaje);
     }
     
     redirect('/admin/alumnos.php');
@@ -314,6 +314,10 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $alumnos = $stmt->fetchAll();
 
+// Recoger advertencias de importación por pegado
+$importWarnings = $_SESSION['import_warnings'] ?? [];
+unset($_SESSION['import_warnings']);
+
 // Obtener alumno para editar
 $editAlumno = null;
 if (isset($_GET['edit'])) {
@@ -328,9 +332,6 @@ include INCLUDES_PATH . '/header.php';
 <div class="page-header">
     <h1><i class="iconoir-graduation-cap"></i> Alumnos</h1>
     <div class="actions">
-        <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-bulk-import').showModal()">
-            <i class="iconoir-paste-clipboard"></i> Pegar desde Excel
-        </button>
         <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-import').showModal()">
             <i class="iconoir-download"></i> Importar CSV
         </button>
@@ -374,6 +375,19 @@ include INCLUDES_PATH . '/header.php';
 <p style="color: var(--gray-500); margin-bottom: 1rem;">
     Mostrando <?= count($alumnos) ?> alumno<?= count($alumnos) != 1 ? 's' : '' ?>
 </p>
+
+<?php if (!empty($importWarnings)): ?>
+<div class="card" style="border-left: 4px solid var(--warning);">
+    <div class="card-header">
+        <h3 class="card-title"><i class="iconoir-warning-circle"></i> Advertencias de la última importación</h3>
+    </div>
+    <ul style="margin: 0; padding-left: 1.25rem; color: var(--gray-700); line-height: 1.4;">
+        <?php foreach ($importWarnings as $warn): ?>
+        <li><?= sanitize($warn) ?></li>
+        <?php endforeach; ?>
+    </ul>
+</div>
+<?php endif; ?>
 
 <?php if (count($alumnos) > 0): ?>
 <div class="table-container">
@@ -497,52 +511,7 @@ include INCLUDES_PATH . '/header.php';
     </div>
 </dialog>
 
-<!-- Modal Importar desde Excel (pegar) -->
-<dialog id="modal-bulk-import" class="modal">
-    <div class="modal-content" style="max-width: 700px;">
-        <div class="modal-header">
-            <h2>Importar desde Excel</h2>
-            <button type="button" onclick="this.closest('dialog').close()" class="modal-close">&times;</button>
-        </div>
-        <form method="POST" id="form-bulk-import">
-            <?= csrfField() ?>
-            <input type="hidden" name="action" value="bulk_import">
-            <input type="hidden" name="bulk_data" id="bulk_data_hidden">
-            
-            <div class="form-group">
-                <label>Formato esperado (7 columnas separadas por tabulador)</label>
-                <code style="display: block; background: var(--gray-100); padding: 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; overflow-x: auto; white-space: nowrap;">
-                    Nº Usuario &nbsp;&nbsp; Apellido1 &nbsp;&nbsp; Apellido2 &nbsp;&nbsp; Nombre &nbsp;&nbsp; Nivel &nbsp;&nbsp; Grupo &nbsp;&nbsp; Monitor/a (email)
-                </code>
-            </div>
-            
-            <div class="form-group">
-                <label for="bulk_data">Pega aquí las filas copiadas desde Excel</label>
-                <textarea id="bulk_data" class="form-control" rows="10" placeholder="Selecciona y copia las filas desde Excel (sin cabecera) y pégalas aquí...&#10;&#10;Ejemplo:&#10;12345	García	López	Ana	Burbujita	Infantil Lunes	monitor@aquatiq.es&#10;12346	Pérez	Ruiz	Carlos	Medusa	Infantil Martes	monitor@aquatiq.es" style="font-family: monospace; font-size: 0.9rem;" required></textarea>
-            </div>
-            
-            <div style="background: var(--info-light); padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1rem; font-size: 0.9rem;">
-                <strong>Instrucciones:</strong>
-                <ul style="margin: 0.5rem 0 0 1.5rem; padding: 0;">
-                    <li>Selecciona las filas en Excel (sin la cabecera)</li>
-                    <li>Copia (Ctrl+C o Cmd+C)</li>
-                    <li>Pega en el área de texto</li>
-                    <li>El <strong>Nivel</strong> debe existir en el sistema</li>
-                    <li>Si el <strong>Grupo</strong> no existe, se creará automáticamente con ese nivel</li>
-                    <li>Si el <strong>Monitor</strong> (email) no existe, se mostrará advertencia</li>
-                    <li>Si el <strong>Nº Usuario</strong> ya existe, se actualizarán los datos del alumno</li>
-                </ul>
-            </div>
-            
-            <div class="modal-footer">
-                <button type="button" onclick="this.closest('dialog').close()" class="btn btn-secondary">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Importar Alumnos</button>
-            </div>
-        </form>
-    </div>
-</dialog>
-
-<!-- Modal Importar CSV -->
+<!-- Modal Importar -->
 <dialog id="modal-import" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -635,21 +604,5 @@ include INCLUDES_PATH . '/header.php';
     </div>
 </dialog>
 <?php endif; ?>
-
-<script>
-// Manejo del formulario de importación masiva
-document.getElementById('form-bulk-import')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const textarea = document.getElementById('bulk_data');
-    const hiddenInput = document.getElementById('bulk_data_hidden');
-    
-    // Copiar el contenido del textarea al campo oculto para envío POST
-    hiddenInput.value = textarea.value;
-    
-    // Enviar el formulario
-    this.submit();
-});
-</script>
 
 <?php include INCLUDES_PATH . '/footer.php'; ?>
