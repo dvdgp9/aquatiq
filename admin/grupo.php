@@ -104,6 +104,35 @@ if (isPost()) {
         }
     }
     
+    // Crear nuevo monitor y asignarlo al grupo
+    if ($action === 'create_monitor') {
+        $nombre = trim($_POST['nombre'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $password = trim($_POST['password'] ?? '');
+        
+        if (empty($nombre) || empty($email) || empty($password)) {
+            setFlashMessage('error', 'Nombre, email y contraseña son obligatorios.');
+        } else {
+            // Verificar que el email no exista
+            $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
+            $stmt->execute([$email]);
+            if ($stmt->fetch()) {
+                setFlashMessage('error', 'Ya existe un usuario con ese email.');
+            } else {
+                // Crear el monitor
+                $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, email, password, rol) VALUES (?, ?, ?, 'monitor')");
+                $stmt->execute([$nombre, $email, password_hash($password, PASSWORD_DEFAULT)]);
+                $monitor_id = $pdo->lastInsertId();
+                
+                // Asignarlo al grupo
+                $stmt = $pdo->prepare("INSERT INTO monitores_grupos (monitor_id, grupo_id) VALUES (?, ?)");
+                $stmt->execute([$monitor_id, $grupo_id]);
+                
+                setFlashMessage('success', "Monitor '$nombre' creado y asignado al grupo.");
+            }
+        }
+    }
+    
     redirect("/admin/grupo.php?id=$grupo_id");
 }
 
@@ -265,12 +294,13 @@ include INCLUDES_PATH . '/header.php';
                     <i class="iconoir-plus"></i> Añadir
                 </button>
             </form>
-            <?php else: ?>
-            <p style="font-size: 0.85rem; color: var(--gray-500);">
-                <i class="iconoir-info-circle"></i> No hay más monitores disponibles. 
-                <a href="/admin/monitores.php">Crear nuevo monitor</a>
-            </p>
             <?php endif; ?>
+            
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-100);">
+                <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('modal-crear-monitor').showModal()">
+                    <i class="iconoir-plus"></i> Crear nuevo monitor
+                </button>
+            </div>
         </div>
     </div>
     
@@ -353,5 +383,46 @@ include INCLUDES_PATH . '/header.php';
     </div>
     
 </div>
+
+<!-- Modal Crear Monitor -->
+<dialog id="modal-crear-monitor" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Nuevo Monitor</h2>
+            <button type="button" onclick="this.closest('dialog').close()" class="modal-close">&times;</button>
+        </div>
+        <form method="POST">
+            <?= csrfField() ?>
+            <input type="hidden" name="action" value="create_monitor">
+            
+            <div class="form-group">
+                <label for="monitor-nombre">Nombre completo</label>
+                <input type="text" id="monitor-nombre" name="nombre" class="form-control" required 
+                       placeholder="Ej: María García López">
+            </div>
+            
+            <div class="form-group">
+                <label for="monitor-email">Email</label>
+                <input type="email" id="monitor-email" name="email" class="form-control" required 
+                       placeholder="Ej: maria@ejemplo.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="monitor-password">Contraseña</label>
+                <input type="password" id="monitor-password" name="password" class="form-control" required 
+                       placeholder="Mínimo 6 caracteres">
+            </div>
+            
+            <p style="font-size: 0.85rem; color: var(--gray-500); margin-bottom: 1rem;">
+                <i class="iconoir-info-circle"></i> El monitor se creará y asignará automáticamente a este grupo.
+            </p>
+            
+            <div class="modal-footer">
+                <button type="button" onclick="this.closest('dialog').close()" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Crear Monitor</button>
+            </div>
+        </form>
+    </div>
+</dialog>
 
 <?php include INCLUDES_PATH . '/footer.php'; ?>

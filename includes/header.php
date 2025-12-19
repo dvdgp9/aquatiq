@@ -23,11 +23,10 @@ $pageTitle = $pageTitle ?? APP_NAME;
             <nav class="main-nav">
                 <ul>
                     <?php if (canAccessAdmin()): ?>
-                    <li><a href="/admin/niveles.php">Niveles</a></li>
                     <li><a href="/admin/grupos.php">Grupos</a></li>
-                    <li><a href="/admin/alumnos.php">Alumnos</a></li>
                     <li><a href="/admin/monitores.php">Monitores</a></li>
-                    <li><a href="/admin/plantillas.php">Plantillas</a></li>
+                    <li><a href="/admin/alumnos.php">Alumnos</a></li>
+                    <li><a href="/admin/niveles.php">Niveles</a></li>
                     <?php endif; ?>
                     
                     <?php if (hasRole('monitor')): ?>

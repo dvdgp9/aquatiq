@@ -79,14 +79,6 @@ if (!$showInactive) {
 $sql .= " ORDER BY n.orden ASC, g.nombre ASC";
 $grupos = $pdo->query($sql)->fetchAll();
 
-// Obtener grupo para editar
-$editGrupo = null;
-if (isset($_GET['edit'])) {
-    $stmt = $pdo->prepare("SELECT * FROM grupos WHERE id = ?");
-    $stmt->execute([(int)$_GET['edit']]);
-    $editGrupo = $stmt->fetch();
-}
-
 include INCLUDES_PATH . '/header.php';
 ?>
 
@@ -138,7 +130,7 @@ include INCLUDES_PATH . '/header.php';
                     <?php endif; ?>
                 </td>
                 <td class="actions">
-                    <a href="/admin/grupos.php?edit=<?= $grupo['id'] ?>" class="btn btn-sm btn-secondary">Editar</a>
+                    <a href="/admin/grupo.php?id=<?= $grupo['id'] ?>" class="btn btn-sm btn-secondary">Editar</a>
                     <?php if ($grupo['activo']): ?>
                     <form method="POST" style="display:inline;">
                         <?= csrfField() ?>
@@ -210,51 +202,5 @@ include INCLUDES_PATH . '/header.php';
         </form>
     </div>
 </dialog>
-
-<!-- Modal Editar -->
-<?php if ($editGrupo): ?>
-<dialog id="modal-editar" class="modal" open>
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Editar Grupo</h2>
-            <a href="/admin/grupos.php" class="modal-close">&times;</a>
-        </div>
-        <form method="POST">
-            <?= csrfField() ?>
-            <input type="hidden" name="action" value="update">
-            <input type="hidden" name="id" value="<?= $editGrupo['id'] ?>">
-            
-            <div class="form-group">
-                <label for="edit-nombre">Nombre del grupo</label>
-                <input type="text" id="edit-nombre" name="nombre" class="form-control" required 
-                       value="<?= sanitize($editGrupo['nombre']) ?>">
-            </div>
-            
-            <div class="form-group">
-                <label for="edit-nivel_id">Nivel</label>
-                <select id="edit-nivel_id" name="nivel_id" class="form-control">
-                    <option value="">-- Sin nivel asignado --</option>
-                    <?php foreach ($niveles as $nivel): ?>
-                    <option value="<?= $nivel['id'] ?>" <?= $editGrupo['nivel_id'] == $nivel['id'] ? 'selected' : '' ?>>
-                        <?= sanitize($nivel['nombre']) ?>
-                    </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="edit-horario">Horario</label>
-                <input type="text" id="edit-horario" name="horario" class="form-control" 
-                       value="<?= sanitize($editGrupo['horario'] ?? '') ?>">
-            </div>
-            
-            <div class="modal-footer">
-                <a href="/admin/grupos.php" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-            </div>
-        </form>
-    </div>
-</dialog>
-<?php endif; ?>
 
 <?php include INCLUDES_PATH . '/footer.php'; ?>

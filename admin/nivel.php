@@ -105,6 +105,26 @@ if (isPost()) {
         setFlashMessage('success', 'Ítem eliminado correctamente.');
     }
     
+    // Asignar grupo a este nivel
+    if ($action === 'add_grupo') {
+        $grupo_id = (int)($_POST['grupo_id'] ?? 0);
+        if ($grupo_id) {
+            $stmt = $pdo->prepare("UPDATE grupos SET nivel_id = ? WHERE id = ?");
+            $stmt->execute([$nivel_id, $grupo_id]);
+            setFlashMessage('success', 'Grupo asignado a este nivel.');
+        }
+    }
+    
+    // Quitar grupo de este nivel
+    if ($action === 'remove_grupo') {
+        $grupo_id = (int)($_POST['grupo_id'] ?? 0);
+        if ($grupo_id) {
+            $stmt = $pdo->prepare("UPDATE grupos SET nivel_id = NULL WHERE id = ?");
+            $stmt->execute([$grupo_id]);
+            setFlashMessage('success', 'Grupo quitado de este nivel.');
+        }
+    }
+    
     redirect("/admin/nivel.php?id=$nivel_id");
 }
 
@@ -122,6 +142,14 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute([$nivel_id]);
 $grupos = $stmt->fetchAll();
+
+// Obtener grupos sin nivel asignado (para poder añadirlos)
+$gruposSinNivel = $pdo->query("
+    SELECT id, nombre, horario 
+    FROM grupos 
+    WHERE (nivel_id IS NULL OR nivel_id = 0) AND activo = 1
+    ORDER BY nombre
+")->fetchAll();
 
 // Obtener plantillas de este nivel con sus ítems
 $stmt = $pdo->prepare("SELECT * FROM plantillas_evaluacion WHERE nivel_id = ? AND activo = 1");
@@ -218,9 +246,29 @@ include INCLUDES_PATH . '/header.php';
             <p style="color: var(--gray-500);">No hay grupos con este nivel asignado.</p>
             <?php endif; ?>
             
-            <p style="font-size: 0.85rem; color: var(--gray-500); margin-top: 1rem;">
-                <a href="/admin/grupos.php">Ir a Grupos</a> para crear o asignar niveles.
-            </p>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-100);">
+                <?php if (count($gruposSinNivel) > 0): ?>
+                <form method="POST" style="display: flex; gap: 0.5rem;">
+                    <?= csrfField() ?>
+                    <input type="hidden" name="action" value="add_grupo">
+                    <select name="grupo_id" class="form-control" style="flex: 1;">
+                        <option value="">-- Asignar grupo --</option>
+                        <?php foreach ($gruposSinNivel as $g): ?>
+                        <option value="<?= $g['id'] ?>">
+                            <?= sanitize($g['nombre']) ?>
+                            <?= $g['horario'] ? "({$g['horario']})" : '' ?>
+                        </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="btn btn-success">
+                        <i class="iconoir-plus"></i>
+                    </button>
+                </form>
+                <?php endif; ?>
+                <p style="font-size: 0.85rem; color: var(--gray-500); margin-top: 0.75rem;">
+                    <a href="/admin/grupos.php">Ir a Grupos</a> para crear nuevos.
+                </p>
+            </div>
         </div>
     </div>
     

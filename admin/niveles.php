@@ -74,14 +74,6 @@ if (!$showInactive) {
 $sql .= " ORDER BY n.orden ASC, n.nombre ASC";
 $niveles = $pdo->query($sql)->fetchAll();
 
-// Obtener nivel para editar
-$editNivel = null;
-if (isset($_GET['edit'])) {
-    $stmt = $pdo->prepare("SELECT * FROM niveles WHERE id = ?");
-    $stmt->execute([(int)$_GET['edit']]);
-    $editNivel = $stmt->fetch();
-}
-
 include INCLUDES_PATH . '/header.php';
 ?>
 
@@ -127,7 +119,7 @@ include INCLUDES_PATH . '/header.php';
                     <?php endif; ?>
                 </td>
                 <td class="actions">
-                    <a href="/admin/niveles.php?edit=<?= $nivel['id'] ?>" class="btn btn-sm btn-secondary">Editar</a>
+                    <a href="/admin/nivel.php?id=<?= $nivel['id'] ?>" class="btn btn-sm btn-secondary">Editar</a>
                     <?php if ($nivel['activo']): ?>
                     <form method="POST" style="display:inline;">
                         <?= csrfField() ?>
@@ -189,39 +181,5 @@ include INCLUDES_PATH . '/header.php';
         </form>
     </div>
 </dialog>
-
-<!-- Modal Editar -->
-<?php if ($editNivel): ?>
-<dialog id="modal-editar" class="modal" open>
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Editar Nivel</h2>
-            <a href="/admin/niveles.php" class="modal-close">&times;</a>
-        </div>
-        <form method="POST">
-            <?= csrfField() ?>
-            <input type="hidden" name="action" value="update">
-            <input type="hidden" name="id" value="<?= $editNivel['id'] ?>">
-            
-            <div class="form-group">
-                <label for="edit-nombre">Nombre del nivel</label>
-                <input type="text" id="edit-nombre" name="nombre" class="form-control" required 
-                       value="<?= sanitize($editNivel['nombre']) ?>">
-            </div>
-            
-            <div class="form-group">
-                <label for="edit-orden">Orden de progresión</label>
-                <input type="number" id="edit-orden" name="orden" class="form-control" 
-                       value="<?= $editNivel['orden'] ?>" min="1">
-            </div>
-            
-            <div class="modal-footer">
-                <a href="/admin/niveles.php" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-            </div>
-        </form>
-    </div>
-</dialog>
-<?php endif; ?>
 
 <?php include INCLUDES_PATH . '/footer.php'; ?>
