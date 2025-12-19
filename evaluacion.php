@@ -11,7 +11,7 @@ $pageTitle = 'Evaluación';
 // Se requiere haber identificado previamente un alumno en /evaluaciones.php
 if (!isset($_SESSION['public_alumno_id'])) {
     setFlashMessage('error', 'Busca primero a tu hijo/a para ver sus evaluaciones.');
-    redirect('/evaluaciones.php');
+    redirect('/evaluaciones');
 }
 
 $alumnoId = (int)$_SESSION['public_alumno_id'];
@@ -40,7 +40,7 @@ $evaluacion = $stmt->fetch();
 
 if (!$evaluacion) {
     setFlashMessage('error', 'No hemos encontrado esta evaluación para el alumno seleccionado.');
-    redirect('/evaluaciones.php');
+    redirect('/evaluaciones');
 }
 
 // Obtener respuestas con ítems
@@ -59,7 +59,7 @@ include INCLUDES_PATH . '/header.php';
 
 <div class="page-header">
     <h1>
-        <a href="/evaluaciones.php" style="color: var(--gray-400); margin-right: 0.5rem;">←</a>
+        <a href="/evaluaciones" style="color: var(--gray-400); margin-right: 0.5rem;">←</a>
         Evaluación
     </h1>
 </div>

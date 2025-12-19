@@ -11,7 +11,7 @@ $pageTitle = 'Evaluaciones';
 // Permitir reiniciar la búsqueda
 if (isset($_GET['reset'])) {
     unset($_SESSION['public_alumno_id'], $_SESSION['public_alumno_nombre']);
-    redirect('/evaluaciones.php');
+    redirect('/evaluaciones');
 }
 
 $alumno = null;
@@ -36,7 +36,7 @@ if (isPost()) {
 
     if ($numeroUsuario === '' || $nombreHijo === '') {
         setFlashMessage('error', 'Introduce el número de usuario y el nombre de tu hijo/a.');
-        redirect('/evaluaciones.php');
+        redirect('/evaluaciones');
     }
 
     // Buscar alumno por número de usuario y nombre (case-insensitive, sin espacios)
@@ -55,7 +55,7 @@ if (isPost()) {
 
     if (!$alumno) {
         setFlashMessage('error', 'No hemos encontrado un alumno con esos datos. Revisa el número de usuario y el nombre.');
-        redirect('/evaluaciones.php');
+        redirect('/evaluaciones');
     }
 
     $_SESSION['public_alumno_id'] = $alumno['id'];
@@ -122,7 +122,7 @@ include INCLUDES_PATH . '/header.php';
                 </p>
             </div>
         </div>
-        <a href="/evaluaciones.php?reset=1" class="btn btn-secondary" style="white-space: nowrap;">
+        <a href="/evaluaciones?reset=1" class="btn btn-secondary" style="white-space: nowrap;">
             <i class="iconoir-refresh"></i> Buscar otro alumno
         </a>
     </div>
@@ -149,7 +149,7 @@ include INCLUDES_PATH . '/header.php';
         </p>
         <?php endif; ?>
         
-        <a href="/evaluacion.php?id=<?= $eval['id'] ?>" class="btn btn-primary">
+        <a href="/evaluacion?id=<?= $eval['id'] ?>" class="btn btn-primary">
             Ver detalle
         </a>
     </div>

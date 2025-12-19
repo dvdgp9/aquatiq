@@ -1,0 +1,15 @@
+# Enable URL rewriting
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # If the request is for an existing file or directory, do nothing
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Clean routes for public evaluations access
+  RewriteRule ^evaluaciones/?$ evaluaciones.php [L,QSA]
+  RewriteRule ^evaluacion/([0-9]+)/?$ evaluacion.php?id=$1 [L,QSA]
+  RewriteRule ^evaluacion/?$ evaluacion.php [L,QSA]
+</IfModule>
