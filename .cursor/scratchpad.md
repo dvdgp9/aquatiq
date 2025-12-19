@@ -119,8 +119,28 @@ monitores_grupos (monitor_id, grupo_id) -- relación N:M
 - [ ] Generación de PDF para padres (futura mejora)
 - [ ] Acceso público a evaluaciones (implementado, falta probar end-to-end)
 
-### En progreso
-- [ ] Usuario probando en aquatiq.ebone.es
+### En progreso - Refactor UX: Gestión centralizada
+**Objetivo**: Simplificar la gestión haciendo que desde cada entidad se pueda gestionar todo lo relacionado.
+
+**Cambios planificados:**
+
+1. **Vista de detalle de Grupo** (`admin/grupo.php?id=X`):
+   - Editar nombre, nivel, horario
+   - Ver/añadir/quitar monitores asignados
+   - Ver/gestionar alumnos del grupo
+
+2. **Vista de detalle de Nivel** (`admin/nivel.php?id=X`):
+   - Editar nombre, orden
+   - Ver grupos de este nivel
+   - **Gestionar plantillas de evaluación** (integradas aquí, no en página separada)
+   - Ver/editar ítems de cada plantilla
+
+3. **Simplificar navegación**:
+   - Grupos → clic → detalle con todo
+   - Niveles → clic → detalle con plantillas integradas
+   - Monitores y Alumnos se mantienen como listados, pero con enlaces bidireccionales
+
+### Completado ✅
 
 ### Completado ✅
 - [x] Infraestructura base completa

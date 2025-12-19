@@ -120,7 +120,7 @@ include INCLUDES_PATH . '/header.php';
         <tbody>
             <?php foreach ($grupos as $grupo): ?>
             <tr>
-                <td><strong><?= sanitize($grupo['nombre']) ?></strong></td>
+                <td><a href="/admin/grupo.php?id=<?= $grupo['id'] ?>" style="font-weight: 600; color: var(--primary);"><?= sanitize($grupo['nombre']) ?></a></td>
                 <td>
                     <?php if ($grupo['nivel_nombre']): ?>
                     <span class="badge badge-info"><?= sanitize($grupo['nivel_nombre']) ?></span>

@@ -116,7 +116,7 @@ include INCLUDES_PATH . '/header.php';
             <?php foreach ($niveles as $nivel): ?>
             <tr>
                 <td><?= $nivel['orden'] ?></td>
-                <td><strong><?= sanitize($nivel['nombre']) ?></strong></td>
+                <td><a href="/admin/nivel.php?id=<?= $nivel['id'] ?>" style="font-weight: 600; color: var(--primary);"><?= sanitize($nivel['nombre']) ?></a></td>
                 <td><?= $nivel['total_grupos'] ?></td>
                 <td><?= $nivel['total_plantillas'] ?></td>
                 <td>
