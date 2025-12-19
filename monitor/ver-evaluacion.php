@@ -77,11 +77,11 @@ include INCLUDES_PATH . '/header.php';
     </div>
 </div>
 
-<!-- Info del alumno -->
+<!-- Info de la alumna/o -->
 <div class="card" style="margin-bottom: 1.5rem;">
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
         <div>
-            <small style="color: var(--gray-500);">Alumno</small>
+            <small style="color: var(--gray-500);">Alumna/o</small>
             <p style="font-weight: 600; margin: 0;">
                 <?= sanitize($evaluacion['apellido1'] . ' ' . $evaluacion['apellido2'] . ', ' . $evaluacion['alumno_nombre']) ?>
             </p>
@@ -103,7 +103,7 @@ include INCLUDES_PATH . '/header.php';
             <p style="margin: 0;"><?= sanitize(str_replace('_', ' ', ucfirst($evaluacion['periodo']))) ?></p>
         </div>
         <div>
-            <small style="color: var(--gray-500);">Monitor</small>
+            <small style="color: var(--gray-500);">Monitor/a</small>
             <p style="margin: 0;"><?= sanitize($evaluacion['monitor_nombre']) ?></p>
         </div>
     </div>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Aquatiq - Panel Monitor: Alumnos de un grupo
+ * Aquatiq - Panel Monitor/a: Alumnas/os de un grupo
  */
 
 require_once __DIR__ . '/../config/config.php';
@@ -29,7 +29,7 @@ if (!$grupo) {
 
 $pageTitle = $grupo['nombre'];
 
-// Obtener alumnos del grupo
+// Obtener alumnas/os del grupo
 $stmt = $pdo->prepare("
     SELECT a.*,
            (SELECT COUNT(*) FROM evaluaciones e WHERE e.alumno_id = a.id) as total_evaluaciones,
@@ -61,7 +61,7 @@ include INCLUDES_PATH . '/header.php';
     <table class="table">
         <thead>
             <tr>
-                <th>Alumno</th>
+                <th>Alumna/o</th>
                 <th width="120">Evaluaciones</th>
                 <th width="150">Última evaluación</th>
                 <th width="200">Acciones</th>

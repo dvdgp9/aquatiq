@@ -25,7 +25,7 @@ $stmt->execute([$alumno_id, $user['id']]);
 $alumno = $stmt->fetch();
 
 if (!$alumno) {
-    setFlashMessage('error', 'No tienes acceso a este alumno.');
+    setFlashMessage('error', 'No tienes acceso a esta alumna/o.');
     redirect('/monitor/grupos.php');
 }
 
@@ -48,16 +48,19 @@ if ($evaluacion_id) {
     }
 }
 
-// Obtener plantillas disponibles (del nivel del grupo + niveles adyacentes)
-$stmt = $pdo->prepare("
-    SELECT p.*, n.nombre as nivel_nombre, n.orden
-    FROM plantillas_evaluacion p
-    INNER JOIN niveles n ON p.nivel_id = n.id
-    WHERE p.activo = 1 AND n.activo = 1
-    ORDER BY n.orden
-");
-$stmt->execute();
-$plantillas = $stmt->fetchAll();
+// Obtener plantillas disponibles solo del nivel del alumno (si tiene)
+$plantillas = [];
+if (!empty($alumno['nivel_id'])) {
+    $stmt = $pdo->prepare("
+        SELECT p.*, n.nombre as nivel_nombre, n.orden
+        FROM plantillas_evaluacion p
+        INNER JOIN niveles n ON p.nivel_id = n.id
+        WHERE p.activo = 1 AND n.activo = 1 AND n.id = ?
+        ORDER BY n.orden
+    ");
+    $stmt->execute([$alumno['nivel_id']]);
+    $plantillas = $stmt->fetchAll();
+}
 
 // Obtener niveles para recomendación
 $niveles = $pdo->query("SELECT id, nombre FROM niveles WHERE activo = 1 ORDER BY orden")->fetchAll();
@@ -218,7 +221,7 @@ include INCLUDES_PATH . '/header.php';
                 <label class="a_veces">
                     <input type="radio" name="respuestas[<?= $item['id'] ?>]" value="a_veces"
                            <?= ($respuestas[$item['id']] ?? '') === 'a_veces' ? 'checked' : '' ?>>
-                    A veces
+                    A veces / casi
                 </label>
                 <label class="no">
                     <input type="radio" name="respuestas[<?= $item['id'] ?>]" value="no"

@@ -48,12 +48,12 @@ include INCLUDES_PATH . '/header.php';
         <?php endif; ?>
         
         <p style="margin-bottom: 1rem;">
-            <strong><?= $grupo['total_alumnos'] ?></strong> alumno<?= $grupo['total_alumnos'] != 1 ? 's' : '' ?>
+            <strong><?= $grupo['total_alumnos'] ?></strong> <?= $grupo['total_alumnos'] == 1 ? 'alumna/o' : 'alumnas/os' ?>
         </p>
         
         <div style="display: flex; gap: 0.5rem;">
             <a href="/monitor/alumnos.php?grupo=<?= $grupo['id'] ?>" class="btn btn-primary">
-                Ver alumnos
+                Ver alumnas/os
             </a>
         </div>
     </div>

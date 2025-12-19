@@ -104,7 +104,7 @@ include INCLUDES_PATH . '/header.php';
                 <th>Nombre</th>
                 <th>Nivel</th>
                 <th>Horario</th>
-                <th width="100">Alumnos</th>
+                <th width="100">Alumnas/os</th>
                 <th width="100">Estado</th>
                 <th width="150">Acciones</th>
             </tr>

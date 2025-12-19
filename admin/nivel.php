@@ -234,7 +234,7 @@ include INCLUDES_PATH . '/header.php';
                    onmouseout="this.style.background='var(--gray-50)'">
                     <div style="font-weight: 600; color: var(--primary);"><?= sanitize($grupo['nombre']) ?></div>
                     <div style="font-size: 0.85rem; color: var(--gray-500);">
-                        <?= $grupo['total_alumnos'] ?> alumno(s)
+                        <?= $grupo['total_alumnos'] ?> <?= $grupo['total_alumnos'] == 1 ? 'alumna/o' : 'alumnas/os' ?>
                         <?php if ($grupo['monitores']): ?>
                         • <?= sanitize($grupo['monitores']) ?>
                         <?php endif; ?>

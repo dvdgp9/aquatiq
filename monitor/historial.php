@@ -1,6 +1,6 @@
 <?php
 /**
- * Aquatiq - Panel Monitor: Historial de evaluaciones de un alumno
+ * Aquatiq - Panel Monitor/a: Historial de evaluaciones de una alumna/o
  */
 
 require_once __DIR__ . '/../config/config.php';
@@ -11,7 +11,7 @@ $user = getCurrentUser();
 
 $alumno_id = (int)($_GET['alumno'] ?? 0);
 
-// Obtener datos del alumno y verificar acceso
+// Obtener datos de la alumna/o y verificar acceso
 $stmt = $pdo->prepare("
     SELECT a.*, g.nombre as grupo_nombre, g.id as grupo_id, n.nombre as nivel_nombre
     FROM alumnos a
@@ -24,13 +24,13 @@ $stmt->execute([$alumno_id, $user['id']]);
 $alumno = $stmt->fetch();
 
 if (!$alumno) {
-    setFlashMessage('error', 'No tienes acceso a este alumno.');
+    setFlashMessage('error', 'No tienes acceso a esta alumna/o.');
     redirect('/monitor/grupos.php');
 }
 
 $pageTitle = 'Historial: ' . $alumno['nombre'];
 
-// Obtener evaluaciones del alumno
+// Obtener evaluaciones de la alumna/o
 $stmt = $pdo->prepare("
     SELECT e.*, p.nombre as plantilla_nombre, n.nombre as nivel_evaluado,
            nr.nombre as nivel_recomendado, u.nombre as monitor_nombre
@@ -120,7 +120,7 @@ include INCLUDES_PATH . '/header.php';
     <div class="empty-state">
         <div class="empty-state-icon"><i class="iconoir-clipboard-check"></i></div>
         <h3>Sin evaluaciones</h3>
-        <p>Este alumno aún no tiene evaluaciones.</p>
+        <p>Esta alumna/o aún no tiene evaluaciones.</p>
         <a href="/monitor/evaluar.php?alumno=<?= $alumno_id ?>" class="btn btn-primary" style="margin-top: 1rem;">
             Crear primera evaluación
         </a>
