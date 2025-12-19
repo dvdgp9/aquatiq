@@ -332,6 +332,9 @@ include INCLUDES_PATH . '/header.php';
 <div class="page-header">
     <h1><i class="iconoir-graduation-cap"></i> Alumnos</h1>
     <div class="actions">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-paste').showModal()">
+            <i class="iconoir-clipboard"></i> Pegar desde Excel
+        </button>
         <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-import').showModal()">
             <i class="iconoir-download"></i> Importar CSV
         </button>
@@ -537,6 +540,43 @@ include INCLUDES_PATH . '/header.php';
             <p style="font-size: 0.85rem; color: var(--gray-500);">
                 Si el alumno ya existe (mismo nº usuario), se actualizarán sus datos.
             </p>
+            
+            <div class="modal-footer">
+                <button type="button" onclick="this.closest('dialog').close()" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Importar</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<!-- Modal Pegar desde Excel -->
+<dialog id="modal-paste" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Pegar desde Excel</h2>
+            <button type="button" onclick="this.closest('dialog').close()" class="modal-close">&times;</button>
+        </div>
+        <form method="POST">
+            <?= csrfField() ?>
+            <input type="hidden" name="action" value="paste">
+            
+            <div class="form-group">
+                <label>Formato esperado (7 columnas, separadas por tabulación)</label>
+                <code style="display: block; background: var(--gray-100); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.85rem;">
+Nº USUARIO\tAPELLIDO 1\tAPELLIDO 2\tNOMBRE\tNIVEL\tGRUPO\tMONITOR EMAIL
+12345\tGarcía\tLópez\tAna\tTortuga\tGrupo A\tmonitor@correo.com
+                </code>
+                <p style="color: var(--gray-500); font-size: 0.9rem; margin-top: 0.5rem;">
+                    - Nivel: se asigna al grupo si existe; si no, el grupo se crea sin nivel.<br>
+                    - Grupo: si no existe se crea; si existe sin nivel y se encuentra nivel, se actualiza.<br>
+                    - Monitor: se busca por email; si no existe, se añade advertencia y no se asigna.
+                </p>
+            </div>
+            
+            <div class="form-group">
+                <label for="paste_data">Pega aquí las filas desde Excel</label>
+                <textarea id="paste_data" name="paste_data" class="form-control" rows="10" placeholder="Pega las filas copiadas desde Excel (tabuladas)"></textarea>
+            </div>
             
             <div class="modal-footer">
                 <button type="button" onclick="this.closest('dialog').close()" class="btn btn-secondary">Cancelar</button>
