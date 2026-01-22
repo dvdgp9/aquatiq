@@ -11,6 +11,25 @@ $pageTitle = $pageTitle ?? APP_NAME;
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css">
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0077be">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Aquatiq">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <!-- PWA Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('Aquatiq SW registrado'))
+                    .catch(err => console.log('SW error:', err));
+            });
+        }
+    </script>
 </head>
 <body>
     <header class="main-header">
@@ -31,7 +50,6 @@ $pageTitle = $pageTitle ?? APP_NAME;
                     
                     <?php if (hasRole('monitor')): ?>
                     <li><a href="/monitor/grupos.php">Mis Grupos</a></li>
-                    <li><a href="/monitor/evaluaciones.php">Evaluaciones</a></li>
                     <?php endif; ?>
                     
                     <?php if (hasRole('padre')): ?>
