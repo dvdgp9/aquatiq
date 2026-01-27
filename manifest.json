@@ -2,7 +2,7 @@
   "name": "Aquatiq - Sistema de Evaluación de Natación",
   "short_name": "Aquatiq",
   "description": "Sistema de evaluación de natación para alumnos",
-  "start_url": "/",
+  "start_url": "/acceso-familiar.php",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0077be",

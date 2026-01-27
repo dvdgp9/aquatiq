@@ -21,6 +21,55 @@ function login(string $email, string $password): bool {
     return false;
 }
 
+function loginPadre(string $nombre_hijo, string $codigo): bool {
+    $pdo = getDBConnection();
+    
+    // Normalizar nombre del input (quitar acentos, mayúsculas, espacios extra)
+    $nombre_normalizado = normalizeString($nombre_hijo);
+    
+    // Buscar alumno por codigo (numero_usuario) primero, luego comparar nombre normalizado
+    $stmt = $pdo->prepare("
+        SELECT a.*, u.id as usuario_id, u.nombre as padre_nombre, u.email as padre_email, u.rol
+        FROM alumnos a
+        INNER JOIN usuarios u ON a.padre_id = u.id
+        WHERE a.numero_usuario = ? 
+          AND a.activo = 1 
+          AND u.activo = 1
+          AND u.rol = 'padre'
+    ");
+    $stmt->execute([$codigo]);
+    $results = $stmt->fetchAll();
+    
+    // Comparar nombre normalizado con cada resultado
+    foreach ($results as $result) {
+        if (normalizeString($result['nombre']) === $nombre_normalizado) {
+            $_SESSION['user_id'] = $result['usuario_id'];
+            $_SESSION['user_nombre'] = $result['padre_nombre'];
+            $_SESSION['user_email'] = $result['padre_email'];
+            $_SESSION['user_rol'] = $result['rol'];
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+function normalizeString(string $str): string {
+    // Quitar espacios extra y convertir a minúsculas
+    $str = trim(strtolower($str));
+    
+    // Reemplazar acentos
+    $acentos = ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'à', 'è', 'ì', 'ò', 'ù'];
+    $sinAcentos = ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'a', 'e', 'i', 'o', 'u'];
+    $str = str_replace($acentos, $sinAcentos, $str);
+    
+    // También normalizar mayúsculas con acentos
+    $acentosMay = ['Á', 'É', 'Í', 'Ó', 'Ú', 'Ü', 'Ñ', 'À', 'È', 'Ì', 'Ò', 'Ù'];
+    $str = str_replace($acentosMay, $sinAcentos, $str);
+    
+    return $str;
+}
+
 function logout(): void {
     session_unset();
     session_destroy();
