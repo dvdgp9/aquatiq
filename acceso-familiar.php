@@ -7,8 +7,8 @@
 require_once __DIR__ . '/config/config.php';
 
 if (isLoggedIn()) {
-    if (hasRole('padre')) {
-        redirect('/padre/hijos.php');
+    if (isFamiliar()) {
+        redirect('/familiar/evaluaciones.php');
     } else {
         redirect('/dashboard.php');
     }
@@ -22,8 +22,8 @@ if (isPost()) {
     
     if (empty($nombre_hijo) || empty($codigo)) {
         $error = 'Por favor, introduce el nombre y el código.';
-    } elseif (loginPadre($nombre_hijo, $codigo)) {
-        redirect('/padre/hijos.php');
+    } elseif (loginFamiliar($nombre_hijo, $codigo)) {
+        redirect('/familiar/evaluaciones.php');
     } else {
         $error = 'Nombre o código incorrectos. Verifica los datos e inténtalo de nuevo.';
     }

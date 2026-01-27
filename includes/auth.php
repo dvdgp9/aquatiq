@@ -21,32 +21,30 @@ function login(string $email, string $password): bool {
     return false;
 }
 
-function loginPadre(string $nombre_hijo, string $codigo): bool {
+function loginFamiliar(string $nombre_hijo, string $codigo): bool {
     $pdo = getDBConnection();
     
     // Normalizar nombre del input (quitar acentos, mayúsculas, espacios extra)
     $nombre_normalizado = normalizeString($nombre_hijo);
     
-    // Buscar alumno por codigo (numero_usuario) primero, luego comparar nombre normalizado
+    // Buscar alumno por codigo (numero_usuario)
     $stmt = $pdo->prepare("
-        SELECT a.*, u.id as usuario_id, u.nombre as padre_nombre, u.email as padre_email, u.rol
+        SELECT a.*, g.nombre as grupo_nombre, n.nombre as nivel_nombre
         FROM alumnos a
-        INNER JOIN usuarios u ON a.padre_id = u.id
-        WHERE a.numero_usuario = ? 
-          AND a.activo = 1 
-          AND u.activo = 1
-          AND u.rol = 'padre'
+        LEFT JOIN grupos g ON a.grupo_id = g.id
+        LEFT JOIN niveles n ON g.nivel_id = n.id
+        WHERE a.numero_usuario = ? AND a.activo = 1
     ");
     $stmt->execute([$codigo]);
     $results = $stmt->fetchAll();
     
     // Comparar nombre normalizado con cada resultado
-    foreach ($results as $result) {
-        if (normalizeString($result['nombre']) === $nombre_normalizado) {
-            $_SESSION['user_id'] = $result['usuario_id'];
-            $_SESSION['user_nombre'] = $result['padre_nombre'];
-            $_SESSION['user_email'] = $result['padre_email'];
-            $_SESSION['user_rol'] = $result['rol'];
+    foreach ($results as $alumno) {
+        if (normalizeString($alumno['nombre']) === $nombre_normalizado) {
+            // Sesión especial para familiares (sin usuario en BD)
+            $_SESSION['familiar_alumno_id'] = $alumno['id'];
+            $_SESSION['familiar_alumno_nombre'] = $alumno['nombre'] . ' ' . $alumno['apellido1'];
+            $_SESSION['user_rol'] = 'familiar';
             return true;
         }
     }
@@ -76,7 +74,15 @@ function logout(): void {
 }
 
 function isLoggedIn(): bool {
-    return isset($_SESSION['user_id']);
+    return isset($_SESSION['user_id']) || isset($_SESSION['familiar_alumno_id']);
+}
+
+function isFamiliar(): bool {
+    return isset($_SESSION['familiar_alumno_id']);
+}
+
+function getFamiliarAlumnoId(): ?int {
+    return $_SESSION['familiar_alumno_id'] ?? null;
 }
 
 function getCurrentUser(): ?array {

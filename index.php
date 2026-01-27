@@ -7,8 +7,8 @@
 require_once __DIR__ . '/config/config.php';
 
 if (isLoggedIn()) {
-    if (hasRole('padre')) {
-        redirect('/padre/hijos.php');
+    if (isFamiliar()) {
+        redirect('/familiar/evaluaciones.php');
     } else {
         redirect('/dashboard.php');
     }
