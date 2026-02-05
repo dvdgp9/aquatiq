@@ -4,23 +4,35 @@
  */
 
 require_once __DIR__ . '/../config/config.php';
-requireRole(['monitor', 'coordinador']);
+requireRole(['monitor', 'coordinador', 'admin', 'superadmin']);
 
 $pdo = getDBConnection();
 $user = getCurrentUser();
 
 $grupo_id = (int)($_GET['grupo'] ?? 0);
 
-// Verificar que el monitor tiene acceso a este grupo
-$stmt = $pdo->prepare("
-    SELECT g.*, n.nombre as nivel_nombre, n.id as nivel_id
-    FROM grupos g
-    INNER JOIN monitores_grupos mg ON g.id = mg.grupo_id
-    LEFT JOIN niveles n ON g.nivel_id = n.id
-    WHERE mg.monitor_id = ? AND g.id = ? AND g.activo = 1
-");
-$stmt->execute([$user['id'], $grupo_id]);
-$grupo = $stmt->fetch();
+if (canAccessAdmin()) {
+    // Admin/Superadmin: acceso a cualquier grupo activo
+    $stmt = $pdo->prepare("
+        SELECT g.*, n.nombre as nivel_nombre, n.id as nivel_id
+        FROM grupos g
+        LEFT JOIN niveles n ON g.nivel_id = n.id
+        WHERE g.id = ? AND g.activo = 1
+    ");
+    $stmt->execute([$grupo_id]);
+    $grupo = $stmt->fetch();
+} else {
+    // Verificar que el monitor/coordinador tiene acceso a este grupo
+    $stmt = $pdo->prepare("
+        SELECT g.*, n.nombre as nivel_nombre, n.id as nivel_id
+        FROM grupos g
+        INNER JOIN monitores_grupos mg ON g.id = mg.grupo_id
+        LEFT JOIN niveles n ON g.nivel_id = n.id
+        WHERE mg.monitor_id = ? AND g.id = ? AND g.activo = 1
+    ");
+    $stmt->execute([$user['id'], $grupo_id]);
+    $grupo = $stmt->fetch();
+}
 
 if (!$grupo) {
     setFlashMessage('error', 'No tienes acceso a este grupo.');

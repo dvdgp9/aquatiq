@@ -4,24 +4,37 @@
  */
 
 require_once __DIR__ . '/../config/config.php';
-requireRole(['monitor', 'coordinador']);
+requireRole(['monitor', 'coordinador', 'admin', 'superadmin']);
 
 $pageTitle = 'Mis Grupos';
 $pdo = getDBConnection();
 $user = getCurrentUser();
 
-// Obtener grupos asignados al monitor
-$stmt = $pdo->prepare("
-    SELECT g.*, n.nombre as nivel_nombre, n.id as nivel_id,
-           (SELECT COUNT(*) FROM alumnos a WHERE a.grupo_id = g.id AND a.activo = 1) as total_alumnos
-    FROM grupos g
-    INNER JOIN monitores_grupos mg ON g.id = mg.grupo_id
-    LEFT JOIN niveles n ON g.nivel_id = n.id
-    WHERE mg.monitor_id = ? AND g.activo = 1
-    ORDER BY n.orden, g.nombre
-");
-$stmt->execute([$user['id']]);
-$grupos = $stmt->fetchAll();
+if (canAccessAdmin()) {
+    // Admin/Superadmin: ver todos los grupos activos
+    $stmt = $pdo->query("
+        SELECT g.*, n.nombre as nivel_nombre, n.id as nivel_id,
+               (SELECT COUNT(*) FROM alumnos a WHERE a.grupo_id = g.id AND a.activo = 1) as total_alumnos
+        FROM grupos g
+        LEFT JOIN niveles n ON g.nivel_id = n.id
+        WHERE g.activo = 1
+        ORDER BY n.orden, g.nombre
+    ");
+    $grupos = $stmt->fetchAll();
+} else {
+    // Obtener grupos asignados al monitor/coordinador
+    $stmt = $pdo->prepare("
+        SELECT g.*, n.nombre as nivel_nombre, n.id as nivel_id,
+               (SELECT COUNT(*) FROM alumnos a WHERE a.grupo_id = g.id AND a.activo = 1) as total_alumnos
+        FROM grupos g
+        INNER JOIN monitores_grupos mg ON g.id = mg.grupo_id
+        LEFT JOIN niveles n ON g.nivel_id = n.id
+        WHERE mg.monitor_id = ? AND g.activo = 1
+        ORDER BY n.orden, g.nombre
+    ");
+    $stmt->execute([$user['id']]);
+    $grupos = $stmt->fetchAll();
+}
 
 include INCLUDES_PATH . '/header.php';
 ?>

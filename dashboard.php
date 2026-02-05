@@ -89,6 +89,7 @@ include INCLUDES_PATH . '/header.php';
             <li><a href="/admin/alumnos.php"><i class="iconoir-graduation-cap"></i> Alumnos</a></li>
             <li><a href="/admin/monitores.php"><i class="iconoir-swimming"></i> Monitores</a></li>
             <li><a href="/admin/plantillas.php"><i class="iconoir-clipboard-check"></i> Plantillas de evaluación</a></li>
+            <li><a href="/monitor/grupos.php"><i class="iconoir-clipboard-check"></i> Evaluar</a></li>
         </ul>
     </div>
     <?php endif; ?>

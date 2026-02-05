@@ -4,7 +4,7 @@
  */
 
 require_once __DIR__ . '/../config/config.php';
-requireRole(['monitor', 'coordinador']);
+requireRole(['monitor', 'coordinador', 'admin', 'superadmin']);
 
 $pdo = getDBConnection();
 $user = getCurrentUser();
@@ -12,17 +12,30 @@ $user = getCurrentUser();
 $alumno_id = (int)($_GET['alumno'] ?? 0);
 $evaluacion_id = (int)($_GET['evaluacion'] ?? 0);
 
-// Obtener datos del alumno y verificar acceso
-$stmt = $pdo->prepare("
-    SELECT a.*, g.nombre as grupo_nombre, g.id as grupo_id, n.id as nivel_id, n.nombre as nivel_nombre
-    FROM alumnos a
-    INNER JOIN grupos g ON a.grupo_id = g.id
-    INNER JOIN monitores_grupos mg ON g.id = mg.grupo_id
-    LEFT JOIN niveles n ON g.nivel_id = n.id
-    WHERE a.id = ? AND mg.monitor_id = ? AND a.activo = 1
-");
-$stmt->execute([$alumno_id, $user['id']]);
-$alumno = $stmt->fetch();
+if (canAccessAdmin()) {
+    // Admin/Superadmin: acceso a cualquier alumno activo
+    $stmt = $pdo->prepare("
+        SELECT a.*, g.nombre as grupo_nombre, g.id as grupo_id, n.id as nivel_id, n.nombre as nivel_nombre
+        FROM alumnos a
+        INNER JOIN grupos g ON a.grupo_id = g.id
+        LEFT JOIN niveles n ON g.nivel_id = n.id
+        WHERE a.id = ? AND a.activo = 1
+    ");
+    $stmt->execute([$alumno_id]);
+    $alumno = $stmt->fetch();
+} else {
+    // Obtener datos del alumno y verificar acceso
+    $stmt = $pdo->prepare("
+        SELECT a.*, g.nombre as grupo_nombre, g.id as grupo_id, n.id as nivel_id, n.nombre as nivel_nombre
+        FROM alumnos a
+        INNER JOIN grupos g ON a.grupo_id = g.id
+        INNER JOIN monitores_grupos mg ON g.id = mg.grupo_id
+        LEFT JOIN niveles n ON g.nivel_id = n.id
+        WHERE a.id = ? AND mg.monitor_id = ? AND a.activo = 1
+    ");
+    $stmt->execute([$alumno_id, $user['id']]);
+    $alumno = $stmt->fetch();
+}
 
 if (!$alumno) {
     setFlashMessage('error', 'No tienes acceso a esta alumna/o.');

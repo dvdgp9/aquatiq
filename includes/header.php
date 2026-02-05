@@ -46,6 +46,7 @@ $pageTitle = $pageTitle ?? APP_NAME;
                     <li><a href="/admin/monitores.php">Monitores</a></li>
                     <li><a href="/admin/alumnos.php">Alumnos</a></li>
                     <li><a href="/admin/niveles.php">Niveles</a></li>
+                    <li><a href="/monitor/grupos.php">Evaluar</a></li>
                     <?php endif; ?>
                     
                     <?php if (isMonitorLike()): ?>
