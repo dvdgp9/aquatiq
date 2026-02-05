@@ -797,6 +797,10 @@ dialog.modal form {
     cursor: pointer;
 }
 
+.btn-block {
+    width: 100%;
+}
+
 /* === GROUPS PAGE === */
 .groups-toolbar {
     display: flex;
@@ -861,34 +865,77 @@ dialog.modal form {
     color: var(--gray-700);
 }
 
+.groups-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
 .groups-grid .group-card {
     display: flex;
     flex-direction: column;
+    padding: 1.5rem;
+    height: 100%;
+    justify-content: space-between;
+}
+
+.group-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
     gap: 1rem;
 }
 
-.group-meta {
+.group-info-main {
+    flex: 1;
+}
+
+.group-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.group-time {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.group-badge-wrapper {
+    flex-shrink: 0;
+}
+
+.group-card-middle {
+    margin-bottom: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-100);
+}
+
+.group-count {
     display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
+    align-items: center;
+    gap: 0.5rem;
     color: var(--gray-500);
     font-size: 0.95rem;
 }
 
-.group-meta-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.group-meta-item i {
+.group-count i {
     color: var(--primary);
+    font-size: 1.1rem;
 }
 
-.group-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.group-card-bottom {
+    margin-top: auto;
+}
+
+.group-card-bottom .btn {
+    padding: 0.8rem 1rem;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
 }
 
 /* === RESPONSIVE === */

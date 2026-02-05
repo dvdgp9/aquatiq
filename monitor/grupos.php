@@ -78,28 +78,29 @@ include INCLUDES_PATH . '/header.php';
 <div class="dashboard-grid groups-grid" id="groups-grid">
     <?php foreach ($grupos as $grupo): ?>
     <div class="card group-card" data-search="<?= sanitize(strtolower($grupo['nombre'] . ' ' . ($grupo['nivel_nombre'] ?? '') . ' ' . ($grupo['horario'] ?? ''))) ?>">
-        <div class="card-header">
-            <h3 class="card-title"><?= sanitize($grupo['nombre']) ?></h3>
+        <div class="group-card-top">
+            <div class="group-info-main">
+                <h3 class="group-name"><?= sanitize($grupo['nombre']) ?></h3>
+                <?php if ($grupo['horario']): ?>
+                <div class="group-time"><?= sanitize($grupo['horario']) ?></div>
+                <?php endif; ?>
+            </div>
             <?php if ($grupo['nivel_nombre']): ?>
-            <span class="badge badge-info"><?= sanitize($grupo['nivel_nombre']) ?></span>
+            <div class="group-badge-wrapper">
+                <span class="badge badge-info"><?= sanitize($grupo['nivel_nombre']) ?></span>
+            </div>
             <?php endif; ?>
         </div>
         
-        <div class="group-meta">
-            <?php if ($grupo['horario']): ?>
-            <div class="group-meta-item">
-                <i class="iconoir-clock"></i>
-                <span><?= sanitize($grupo['horario']) ?></span>
-            </div>
-            <?php endif; ?>
-            <div class="group-meta-item">
+        <div class="group-card-middle">
+            <div class="group-count">
                 <i class="iconoir-graduation-cap"></i>
                 <span><strong><?= $grupo['total_alumnos'] ?></strong> <?= $grupo['total_alumnos'] == 1 ? 'alumna/o' : 'alumnas/os' ?></span>
             </div>
         </div>
         
-        <div class="group-actions">
-            <a href="/monitor/alumnos.php?grupo=<?= $grupo['id'] ?>" class="btn btn-primary">
+        <div class="group-card-bottom">
+            <a href="/monitor/alumnos.php?grupo=<?= $grupo['id'] ?>" class="btn btn-primary btn-block">
                 Evaluar alumnas/os
             </a>
         </div>
