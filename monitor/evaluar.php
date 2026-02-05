@@ -147,20 +147,37 @@ include INCLUDES_PATH . '/header.php';
     </h1>
 </div>
 
-<div class="card" style="margin-bottom: 1.5rem;">
-    <div style="display: flex; align-items: center; gap: 1rem;">
-        <div style="background: var(--accent-light); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+<div class="card student-summary" style="margin-bottom: 1.5rem;">
+    <div class="student-summary-header">
+        <div class="student-avatar">
             <i class="iconoir-graduation-cap"></i>
         </div>
         <div>
-            <h3 style="margin: 0;"><?= sanitize($alumno['apellido1'] . ' ' . $alumno['apellido2'] . ', ' . $alumno['nombre']) ?></h3>
-            <p style="margin: 0; color: var(--gray-500);">
-                <?= sanitize($alumno['grupo_nombre']) ?>
-                <?php if ($alumno['nivel_nombre']): ?>
-                 • <?= sanitize($alumno['nivel_nombre']) ?>
+            <p class="student-label">Alumno/a</p>
+            <h2 class="student-name"><?= sanitize($alumno['apellido1'] . ' ' . $alumno['apellido2'] . ', ' . $alumno['nombre']) ?></h2>
+            <div class="student-tags">
+                <?php if (!empty($alumno['grupo_nombre'])): ?>
+                <span class="badge badge-info"><?= sanitize($alumno['grupo_nombre']) ?></span>
                 <?php endif; ?>
-            </p>
+                <?php if (!empty($alumno['nivel_nombre'])): ?>
+                <span class="badge badge-success"><?= sanitize($alumno['nivel_nombre']) ?></span>
+                <?php endif; ?>
+            </div>
         </div>
+    </div>
+    <div class="student-meta">
+        <?php if (!empty($alumno['numero_usuario'])): ?>
+        <div class="student-meta-item">
+            <span>Nº usuario</span>
+            <strong><?= sanitize($alumno['numero_usuario']) ?></strong>
+        </div>
+        <?php endif; ?>
+        <?php if (!empty($alumno['fecha_nacimiento'])): ?>
+        <div class="student-meta-item">
+            <span>Fecha nacimiento</span>
+            <strong><?= formatDate($alumno['fecha_nacimiento']) ?></strong>
+        </div>
+        <?php endif; ?>
     </div>
 </div>
 
