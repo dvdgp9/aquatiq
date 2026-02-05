@@ -727,6 +727,21 @@ dialog.modal form {
 }
 
 /* === EVALUACION === */
+.evaluacion-seccion {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: var(--white);
+    padding: 0.6rem 1.25rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.5rem;
+}
+
+.evaluacion-seccion:first-child {
+    margin-top: 0;
+}
+
 .evaluacion-item {
     display: flex;
     align-items: center;

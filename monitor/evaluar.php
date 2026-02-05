@@ -233,7 +233,16 @@ include INCLUDES_PATH . '/header.php';
             <small style="color: var(--gray-500);">Marca la respuesta para cada ítem</small>
         </div>
         
-        <?php foreach ($items as $index => $item): ?>
+        <?php 
+        $seccionActual = null;
+        foreach ($items as $index => $item): 
+            if (!empty($item['seccion']) && $item['seccion'] !== $seccionActual):
+                $seccionActual = $item['seccion'];
+        ?>
+        <div class="evaluacion-seccion">
+            <?= sanitize($seccionActual) ?>
+        </div>
+        <?php endif; ?>
         <div class="evaluacion-item">
             <span class="orden-num" style="background: var(--gray-100); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.85rem; margin-right: 1rem; min-width: 30px; text-align: center;">
                 <?= $index + 1 ?>

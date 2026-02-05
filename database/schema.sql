@@ -100,6 +100,7 @@ CREATE TABLE `items_evaluacion` (
     `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `plantilla_id` INT UNSIGNED NOT NULL,
     `texto` TEXT NOT NULL,
+    `seccion` VARCHAR(100) NULL DEFAULT NULL,
     `orden` INT UNSIGNED NOT NULL DEFAULT 0,
     `activo` TINYINT(1) DEFAULT 1,
     FOREIGN KEY (`plantilla_id`) REFERENCES `plantillas_evaluacion`(`id`) ON DELETE CASCADE
@@ -167,7 +168,11 @@ INSERT INTO `niveles` (`nombre`, `orden`) VALUES
 ('Tiburón', 8),
 ('Tiburón Avanzado', 9),
 ('Delfín', 10),
-('Delfín Avanzado', 11);
+('Delfín Avanzado', 11),
+('Crol', 12),
+('Espalda', 13),
+('Braza', 14),
+('Mariposa', 15);
 
 -- ---------------------------------------------
 -- Plantillas de evaluación (una por nivel)
@@ -183,7 +188,11 @@ INSERT INTO `plantillas_evaluacion` (`nivel_id`, `nombre`) VALUES
 (8, 'Evaluación Tiburón'),
 (9, 'Evaluación Tiburón Avanzado'),
 (10, 'Evaluación Delfín'),
-(11, 'Evaluación Delfín Avanzado');
+(11, 'Evaluación Delfín Avanzado'),
+(12, 'Evaluación Crol'),
+(13, 'Evaluación Espalda'),
+(14, 'Evaluación Braza'),
+(15, 'Evaluación Mariposa');
 
 -- ---------------------------------------------
 -- Ítems de evaluación por nivel
@@ -334,3 +343,63 @@ INSERT INTO `items_evaluacion` (`plantilla_id`, `texto`, `orden`) VALUES
 (11, 'Reconoce y practica correctamente el viraje de espalda.', 8),
 (11, 'Nada 100m braza coordinando correctamente brazos, piernas y respiración.', 9),
 (11, 'Coopera y respeta las normas, compañeros, material, etc.', 10);
+
+-- CROL (plantilla_id = 12)
+INSERT INTO `items_evaluacion` (`plantilla_id`, `texto`, `orden`) VALUES
+(12, 'Lo más posible horizontalmente.', 1),
+(12, 'Rotación lateral de la cabeza y hombros (rolido 35-45º).', 2),
+(12, 'La mano entra suavemente y delante del hombro.', 3),
+(12, 'Se extiende el brazo hacia adelante antes de iniciar la tracción.', 4),
+(12, 'El codo se mantiene más alto que la mano durante las fases de agarre y tracción (propulsión efectiva).', 5),
+(12, 'Movimiento recto hacia atrás paralelo al cuerpo.', 6),
+(12, 'Extensión completa del brazo al final de la tracción.', 7),
+(12, 'El codo es el primero en salir del agua.', 8),
+(12, 'Posición alta codo con respecto a la mano.', 9),
+(12, 'Mano relajada.', 10),
+(12, 'El movimiento es alternado, rítmico, y se origina desde la cadera (efecto látigo).', 11),
+(12, 'Pies en flexión plantar (pies estirados) y ligera rotación interna.', 12),
+(12, 'El giro de la cabeza es lateral, solo para sacar la boca del agua, manteniendo un ojo en el agua.', 13),
+(12, 'Exhala totalmente (burbujea) de forma continua y completa bajo el agua antes de girar para inspirar.', 14),
+(12, 'La toma de aire se realiza en el momento de máximo rolido y cuando el brazo del lado que respira está iniciando el recobro.', 15);
+
+-- ESPALDA (plantilla_id = 13)
+INSERT INTO `items_evaluacion` (`plantilla_id`, `texto`, `orden`) VALUES
+(13, 'Mantiene el cuerpo plano y horizontal en la superficie. La cadera se mantiene alta (no hundida).', 1),
+(13, 'La cabeza está quieta, alineada con la columna vertebral (mirada al techo, orejas en el agua).', 2),
+(13, 'Existe una rotación lateral adecuada del tronco y hombros (aprox. 45°), que ayuda a la tracción y el recobro.', 3),
+(13, 'Brazo en prolongación del hombro.', 4),
+(13, 'Giro de la mano (palma) hacia afuera.', 5),
+(13, 'Dedo meñique es el primero en entrar.', 6),
+(13, 'El brazo inicia el agarre con el codo flexionado bajo el agua y pegado al cuerpo (para generar propulsión).', 7),
+(13, 'La mano realiza un empuje completo hacia atrás, terminando el movimiento cerca del muslo.', 8),
+(13, 'El primero en salir es el pulgar.', 9),
+(13, 'Brazo extendido y relajado.', 10),
+(13, 'El brazo pasa cerca de la oreja.', 11),
+(13, 'Giro de la palma hacia afuera.', 12),
+(13, 'El movimiento es alternado, continuo y se origina desde la cadera (látigo).', 13),
+(13, 'La patada rompe ligeramente la superficie del agua (salpicadura mínima), sin gran amplitud, con los pies en flexión plantar.', 14),
+(13, 'Correcta oposición de brazos: un brazo está entrando al agua mientras el otro está a punto de empujar.', 15);
+
+-- BRAZA (plantilla_id = 14)
+INSERT INTO `items_evaluacion` (`plantilla_id`, `texto`, `orden`) VALUES
+(14, 'Cuerpo horizontal en el momento del deslizamiento. Cabeza alineada, mirando hacia abajo.', 1),
+(14, 'Las manos se juntan rápidamente debajo del pecho o barbilla y se proyectan hacia adelante, manteniendo el cuerpo hidrodinámico.', 2),
+(14, 'Las manos se dirigen hacia afuera y un poco hacia abajo. Los codos se mantienen altos inicialmente.', 3),
+(14, 'Manos y antebrazos barren vigorosamente hacia el centro, sin pasar de la línea de los hombros.', 4),
+(14, 'Los pies están en flexión dorsal (tobillos flexionados) y rotados hacia afuera al iniciar el barrido.', 5),
+(14, 'El empuje es fuerte hacia afuera y luego atrás (movimiento circular), terminando con las piernas estiradas y pies juntos.', 6),
+(14, 'Flexión de rodillas y aproximación de los talones a los glúteos con ligera rotación externa.', 7),
+(14, 'Los brazos terminan su recobro antes de que las piernas inicien su empuje propulsor.', 8),
+(14, 'Sigue la secuencia: Brazos y Respiración → Deslizamiento → Patada → Deslizamiento (máxima pausa).', 9);
+
+-- MARIPOSA (plantilla_id = 15)
+INSERT INTO `items_evaluacion` (`plantilla_id`, `texto`, `orden`) VALUES
+(15, 'Posición horizontal.', 1),
+(15, 'Movimiento ondulatorio (cabeza, tronco y piernas).', 2),
+(15, 'Los brazos entran simultáneamente a la anchura de los hombros, con las palmas ligeramente hacia afuera.', 3),
+(15, 'La trayectoria subacuática es un doble barrido lateral (hacia afuera y luego hacia adentro) para maximizar la propulsión.', 4),
+(15, 'Los brazos salen del agua simultáneamente y se proyectan rectos hacia adelante, justo por encima de la superficie.', 5),
+(15, 'El movimiento de látigo es potente y continuo, originándose principalmente desde la cadera y el torso.', 6),
+(15, 'Pies relajados y tobillos en extensión plantar para un batido efectivo (como una aleta).', 7),
+(15, 'Primera Patada: Fuerte, se realiza cuando las manos entran en el agua. Segunda Patada: Más ligera, se realiza al final del empuje de los brazos, justo antes del recobro.', 8),
+(15, 'Respiración: la cabeza se levanta hacia adelante (o ligeramente lateral) de forma natural, en sincronía con el inicio del recobro de los brazos.', 9);

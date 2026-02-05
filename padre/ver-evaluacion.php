@@ -41,7 +41,7 @@ $pageTitle = 'Evaluación - ' . $evaluacion['alumno_nombre'];
 
 // Obtener respuestas con ítems
 $stmt = $pdo->prepare("
-    SELECT i.texto, i.orden, r.valor
+    SELECT i.texto, i.orden, i.seccion, r.valor
     FROM items_evaluacion i
     LEFT JOIN respuestas r ON i.id = r.item_id AND r.evaluacion_id = ?
     WHERE i.plantilla_id = ?
@@ -115,7 +115,16 @@ include INCLUDES_PATH . '/header.php';
     </div>
     
     <!-- Detalle de ítems -->
-    <?php foreach ($items as $index => $item): ?>
+    <?php 
+    $seccionActual = null;
+    foreach ($items as $index => $item): 
+        if (!empty($item['seccion']) && $item['seccion'] !== $seccionActual):
+            $seccionActual = $item['seccion'];
+    ?>
+    <div class="evaluacion-seccion">
+        <?= sanitize($seccionActual) ?>
+    </div>
+    <?php endif; ?>
     <div class="evaluacion-item">
         <span style="background: var(--gray-100); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.85rem; margin-right: 1rem; min-width: 30px; text-align: center;">
             <?= $index + 1 ?>
