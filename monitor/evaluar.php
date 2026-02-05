@@ -61,19 +61,16 @@ if ($evaluacion_id) {
     }
 }
 
-// Obtener plantillas disponibles solo del nivel del alumno (si tiene)
-$plantillas = [];
-if (!empty($alumno['nivel_id'])) {
-    $stmt = $pdo->prepare("
-        SELECT p.*, n.nombre as nivel_nombre, n.orden
-        FROM plantillas_evaluacion p
-        INNER JOIN niveles n ON p.nivel_id = n.id
-        WHERE p.activo = 1 AND n.activo = 1 AND n.id = ?
-        ORDER BY n.orden
-    ");
-    $stmt->execute([$alumno['nivel_id']]);
-    $plantillas = $stmt->fetchAll();
-}
+// Obtener todas las plantillas activas (cualquier nivel)
+$stmt = $pdo->prepare("
+    SELECT p.*, n.nombre as nivel_nombre, n.orden
+    FROM plantillas_evaluacion p
+    INNER JOIN niveles n ON p.nivel_id = n.id
+    WHERE p.activo = 1 AND n.activo = 1
+    ORDER BY n.orden
+");
+$stmt->execute();
+$plantillas = $stmt->fetchAll();
 
 // Obtener niveles para recomendación
 $niveles = $pdo->query("SELECT id, nombre FROM niveles WHERE activo = 1 ORDER BY orden")->fetchAll();
