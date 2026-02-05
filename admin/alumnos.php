@@ -145,7 +145,7 @@ if (isPost()) {
         
         // Cache de monitores existentes (por email)
         $monitoresCache = [];
-        $stmtMonitores = $pdo->query("SELECT id, LOWER(TRIM(email)) as email_lower, email, nombre FROM usuarios WHERE rol = 'monitor' AND activo = 1");
+        $stmtMonitores = $pdo->query("SELECT id, LOWER(TRIM(email)) as email_lower, email, nombre FROM usuarios WHERE rol IN ('monitor', 'coordinador') AND activo = 1");
         while ($monitor = $stmtMonitores->fetch(PDO::FETCH_ASSOC)) {
             $monitoresCache[$monitor['email_lower']] = $monitor;
         }

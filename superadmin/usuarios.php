@@ -199,6 +199,7 @@ include INCLUDES_PATH . '/header.php';
                         'superadmin' => 'badge-danger',
                         'admin' => 'badge-warning',
                         'monitor' => 'badge-info',
+                        'coordinador' => 'badge-info',
                         'padre' => 'badge-success'
                     ];
                     ?>

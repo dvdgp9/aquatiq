@@ -154,7 +154,7 @@ $monitoresAsignados = $stmt->fetchAll();
 $stmt = $pdo->prepare("
     SELECT u.id, u.nombre, u.email 
     FROM usuarios u 
-    WHERE u.rol = 'monitor' AND u.activo = 1 
+    WHERE u.rol IN ('monitor', 'coordinador') AND u.activo = 1 
     AND u.id NOT IN (SELECT monitor_id FROM monitores_grupos WHERE grupo_id = ?)
     ORDER BY u.nombre
 ");

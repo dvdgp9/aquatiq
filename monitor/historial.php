@@ -4,7 +4,7 @@
  */
 
 require_once __DIR__ . '/../config/config.php';
-requireRole(['monitor']);
+requireRole(['monitor', 'coordinador']);
 
 $pdo = getDBConnection();
 $user = getCurrentUser();

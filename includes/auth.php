@@ -119,6 +119,14 @@ function hasRole(string $role): bool {
     return isset($_SESSION['user_rol']) && $_SESSION['user_rol'] === $role;
 }
 
+function hasAnyRole(array $roles): bool {
+    return isset($_SESSION['user_rol']) && in_array($_SESSION['user_rol'], $roles, true);
+}
+
+function isMonitorLike(): bool {
+    return hasAnyRole(['monitor', 'coordinador']);
+}
+
 function canAccessAdmin(): bool {
     return hasRole('superadmin') || hasRole('admin');
 }

@@ -48,7 +48,7 @@ $pageTitle = $pageTitle ?? APP_NAME;
                     <li><a href="/admin/niveles.php">Niveles</a></li>
                     <?php endif; ?>
                     
-                    <?php if (hasRole('monitor')): ?>
+                    <?php if (isMonitorLike()): ?>
                     <li><a href="/monitor/grupos.php">Mis Grupos</a></li>
                     <?php endif; ?>
                     

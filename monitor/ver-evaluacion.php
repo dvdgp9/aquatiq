@@ -4,7 +4,7 @@
  */
 
 require_once __DIR__ . '/../config/config.php';
-requireRole(['monitor', 'admin', 'superadmin']);
+requireRole(['monitor', 'coordinador', 'admin', 'superadmin']);
 
 $pdo = getDBConnection();
 $user = getCurrentUser();
@@ -38,7 +38,7 @@ if (!$evaluacion) {
 }
 
 // Verificar acceso (monitor del grupo o admin)
-if (hasRole('monitor')) {
+if (isMonitorLike()) {
     $stmt = $pdo->prepare("SELECT 1 FROM monitores_grupos WHERE monitor_id = ? AND grupo_id = ?");
     $stmt->execute([$user['id'], $evaluacion['grupo_id']]);
     if (!$stmt->fetch()) {

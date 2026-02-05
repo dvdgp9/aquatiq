@@ -24,6 +24,7 @@ const ROLES = [
     'superadmin' => 'Superadmin',
     'admin' => 'Administrador',
     'monitor' => 'Monitor',
+    'coordinador' => 'Coordinador',
     'padre' => 'Padre/Tutor'
 ];
 

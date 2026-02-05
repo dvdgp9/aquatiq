@@ -122,7 +122,7 @@ $sql = "SELECT u.*,
         FROM usuarios u
         LEFT JOIN monitores_grupos mg ON u.id = mg.monitor_id
         LEFT JOIN grupos g ON mg.grupo_id = g.id
-        WHERE u.rol = 'monitor'";
+        WHERE u.rol IN ('monitor', 'coordinador')";
 if (!$showInactive) {
     $sql .= " AND u.activo = 1";
 }
@@ -133,7 +133,7 @@ $monitores = $pdo->query($sql)->fetchAll();
 $editMonitor = null;
 $editMonitorGrupos = [];
 if (isset($_GET['edit'])) {
-    $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = ? AND rol = 'monitor'");
+    $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = ? AND rol IN ('monitor', 'coordinador')");
     $stmt->execute([(int)$_GET['edit']]);
     $editMonitor = $stmt->fetch();
     

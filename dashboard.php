@@ -21,7 +21,7 @@ if (canAccessAdmin()) {
 
 // Grupos del monitor (para mostrar directamente en dashboard)
 $gruposMonitor = [];
-if (hasRole('monitor')) {
+if (isMonitorLike()) {
     $stmt = $pdo->prepare("
         SELECT g.*, n.nombre as nivel_nombre, n.id as nivel_id,
                (SELECT COUNT(*) FROM alumnos a WHERE a.grupo_id = g.id AND a.activo = 1) as total_alumnos
@@ -93,7 +93,7 @@ include INCLUDES_PATH . '/header.php';
     </div>
     <?php endif; ?>
     
-    <?php if (hasRole('monitor')): ?>
+<?php if (isMonitorLike()): ?>
     <div class="card">
         <div class="card-header">
             <h3 class="card-title"><i class="iconoir-group"></i> Mis Grupos</h3>
